@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Icon?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane id="secondary" prefHeight="400.0" prefWidth="60.0" stylesheets="@application.css">
+         <children>
+            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="5.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../icons/r.png" />
+               </image>
+            </ImageView>
+            <Icon content="BOOK" layoutX="8.0" layoutY="82.0" prefHeight="50.0" prefWidth="42.0" />
+            <Icon content="SEARCH" layoutX="8.0" layoutY="149.0" prefHeight="50.0" prefWidth="42.0" />
+            <Icon content="PLUS_ONE" layoutX="9.0" layoutY="221.0" prefHeight="50.0" prefWidth="42.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="background" prefHeight="400.0" prefWidth="541.0" stylesheets="@application.css" />
+   </children>
+</HBox>
