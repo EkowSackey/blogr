@@ -5,8 +5,12 @@ module org.example.blogr {
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
-    requires net.synedra.validatorfx;
     requires eu.hansolo.tilesfx;
+    requires org.mongodb.bson;
+    requires org.mongodb.driver.sync.client;
+    requires org.mongodb.driver.core;
+    requires jbcrypt;
+
 
     opens org.example.blogr to javafx.fxml;
     exports org.example.blogr;

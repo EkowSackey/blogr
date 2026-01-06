@@ -25,6 +25,12 @@ public class SceneController {
         switchScene(event, "/org/example/blogr/register-view.fxml");
     }
 
+    @FXML
+    public void switchToHome(ActionEvent event, String name) throws IOException {
+//       todo: display username
+        switchScene(event, "/org/example/blogr/home-view.fxml" );
+    }
+
     private void switchScene(ActionEvent event, String fxmlPath) throws IOException {
         URL url = SceneController.class.getResource(fxmlPath);
 
