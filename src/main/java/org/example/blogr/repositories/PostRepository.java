@@ -15,6 +15,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -43,15 +44,42 @@ public class PostRepository {
     }
 
     private Post toDomain(Document d){
+        List<Document> tagDocs = d.getList("tags", Document.class);
+        List<Tag> tags = tagDocs.stream()
+                .map(doc -> new Tag(doc.getString("name")))
+                .toList();
+
+        List<Document> reviewsDocs = d.getList("reviews", Document.class);
+        List<Review> reviews = reviewsDocs.stream()
+                .map(doc-> new Review(
+                        doc.getDouble("stars"),
+                        doc.getObjectId("userId"),
+                        doc.getObjectId("postId")
+                        )
+
+                ).toList();
+
+        List<Document> commentDocs = d.getList("comments", Document.class);
+        List<Comment> comments = commentDocs.stream()
+                .map(
+                        doc -> new Comment(
+                                doc.getString("content"),
+                                doc.getObjectId("authorId"),
+                                doc.getObjectId("parentId"),
+                                new ArrayList<>(),
+                                doc.getDate("createdAt")
+                        )
+                ).toList();
         return new Post(
+
                 d.getString("title"),
                 d.getString("content"),
                 d.getDate("dateCreated"),
                 d.getDate("lastUpdate"),
                 d.getObjectId("authorId"),
-                d.getList("comments", Comment.class),
-                d.getList("tags", Tag.class),
-                d.getList("reviews", Review.class)
+                comments,
+                tags,
+                reviews
         );
     }
 
@@ -82,7 +110,7 @@ public class PostRepository {
     }
 
     public List<Post> getPostsByTag(Tag tag){
-        Bson filter = Filters.eq("tags", tag);
+        Bson filter = Filters.eq("tags.name", tag.name());
         FindIterable<Document> docs = collection.find(filter);
         List<Post> postsByTag = new ArrayList<>();
         docs.forEach( doc -> postsByTag.add(toDomain(doc)));

@@ -1,5 +1,9 @@
 module org.example.blogr {
     requires javafx.controls;
+
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.fontawesome5;
+
     requires javafx.fxml;
     requires javafx.web;
 
@@ -10,6 +14,8 @@ module org.example.blogr {
     requires org.mongodb.driver.sync.client;
     requires org.mongodb.driver.core;
     requires jbcrypt;
+    requires javafx.graphics;
+
 
 
     opens org.example.blogr to javafx.fxml;

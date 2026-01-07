@@ -12,6 +12,8 @@ import org.example.blogr.exceptions.InvalidCredentialsException;
 import org.example.blogr.exceptions.UserNotFoundException;
 import org.example.blogr.repositories.UserRepository;
 
+import java.util.List;
+
 
 public class UserService {
 
@@ -55,4 +57,24 @@ public class UserService {
         else
            return urepo.findByUsername(user.username());
     }
+
+    public User getMyProfile(ObjectId id){
+        User u = urepo.findById(id);
+        if (u != null){
+            return u;
+        }
+
+        throw new UserNotFoundException("User with this ID does not exist");
+    }
+
+    public List<User> findUsersByUsername(String searchTerm){
+        List<User> users = urepo.searchByUsername(searchTerm);
+
+        if (users != null){
+            return users;
+        }
+
+        throw new UserNotFoundException("No users with this username");
+    }
+
 }

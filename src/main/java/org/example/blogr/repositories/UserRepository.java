@@ -7,6 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
+import org.example.blogr.domain.Post;
 import org.example.blogr.domain.User;
 import org.example.blogr.exceptions.UserNotFoundException;
 import org.bson.Document;
@@ -16,6 +17,7 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class UserRepository {
     private final MongoCollection<Document> collection;
@@ -71,6 +73,14 @@ public class UserRepository {
         if(doc != null)
             return doc.getObjectId("_id");
         else return null;
+    }
+
+    public List<User> searchByUsername(String username){
+        Bson filter = Filters.eq("username", Pattern.compile(Pattern.quote(username), Pattern.CASE_INSENSITIVE));
+        FindIterable<Document> docs = collection.find(filter);
+        List<User> users = new ArrayList<>();
+        docs.forEach( doc -> users.add(toDomain(doc)));
+        return users;
     }
 
     public ObjectId findByEmail(String email){
