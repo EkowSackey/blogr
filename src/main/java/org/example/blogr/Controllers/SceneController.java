@@ -61,7 +61,7 @@ public class SceneController {
      * @throws IOException the io exception
      */
     @FXML
-    public void switchToHome(javafx.scene.input.MouseEvent event) throws IOException {
+    public void switchToHome(Event event) throws IOException {
         switchRoot(event, "/org/example/blogr/home-view.fxml");
     }
 
@@ -72,7 +72,7 @@ public class SceneController {
      * @throws IOException the io exception
      */
     @FXML
-    public void switchToSearch(javafx.scene.input.MouseEvent event) throws IOException {
+    public void switchToSearch(Event event) throws IOException {
         switchRoot(event, "/org/example/blogr/search-view.fxml");
     }
 
@@ -83,7 +83,7 @@ public class SceneController {
      * @throws IOException the io exception
      */
     @FXML
-    public void switchToAdd(javafx.scene.input.MouseEvent event) throws IOException {
+    public void switchToAdd(Event event) throws IOException {
         switchRoot(event, "/org/example/blogr/addPost-view.fxml");
     }
 
@@ -94,7 +94,7 @@ public class SceneController {
      * @throws IOException the io exception
      */
     @FXML
-    public void switchToProfile(javafx.scene.input.MouseEvent event) throws IOException {
+    public void switchToProfile(Event event) throws IOException {
         switchRoot(event, "/org/example/blogr/profile-view.fxml");
     }
 
