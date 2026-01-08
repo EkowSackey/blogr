@@ -11,10 +11,14 @@ import org.example.blogr.Utils.AlertErrorDisplay;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.ErrorDisplay;
 import org.example.blogr.Utils.ValidationUtils;
+import org.example.blogr.domain.Post;
+import org.example.blogr.domain.User;
 import org.example.blogr.exceptions.InvalidCredentialsException;
+import org.example.blogr.services.PostService;
 import org.example.blogr.services.UserService;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class LoginController {
@@ -53,9 +57,15 @@ public class LoginController {
         }
 
         UserService userService = new UserService();
+        PostService postService = new PostService();
         try {
             ObjectId userId = userService.login(usernameOrEmailField.getText(), passwordField.getText());
+            User currentUser = userService.getMyProfile(userId);
+            List<Post> userPosts = postService.getUserPosts(userId);
+
             context.setCurrentUserId(userId);
+            context.setCurrentUser(currentUser);
+            context.setUserPosts(userPosts);
             sc.switchToHome(actionEvent);
         } catch ( InvalidCredentialsException e) {
             ValidationUtils.showServerError(strategy, e.getMessage());

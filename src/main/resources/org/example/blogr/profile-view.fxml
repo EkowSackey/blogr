@@ -22,33 +22,30 @@
         <FontIcon iconColor="#323437" iconLiteral="fas-user-astronaut" iconSize="24" layoutX="19.0" layoutY="370.0" onMouseClicked="#switchToProfile" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
     </AnchorPane>
     <AnchorPane id="background" stylesheets="@application.css" HBox.hgrow="ALWAYS">
-      <children>
-         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
-               <AnchorPane prefHeight="120.0" prefWidth="632.0">
-                  <children>
-                     <ImageView fitHeight="86.0" fitWidth="80.0" layoutX="23.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="20.0">
-                        <image>
-                           <Image url="@../../../icons/avi.jpg" />
-                        </image>
-                     </ImageView>
-                     <Label layoutX="124.0" layoutY="15.0" text="Usrname: " textFill="WHITE" />
-                     <Text fill="WHITE" layoutX="217.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                        <font>
-                           <Font name="Chiller" size="25.0" />
-                        </font>
-                     </Text>
-                     <Label layoutX="126.0" layoutY="53.0" text="Posts: " textFill="WHITE" />
-                     <Text fill="WHITE" layoutX="189.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                        <font>
-                           <Font name="Chiller" size="30.0" />
-                        </font>
-                     </Text>
-                  </children>
-               </AnchorPane>
-               <ListView id="background" stylesheets="@application.css" VBox.vgrow="ALWAYS" />
-            </children>
-         </VBox>
-      </children>
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <AnchorPane prefHeight="120.0" prefWidth="632.0">
+                <ImageView fitHeight="86.0" fitWidth="80.0" layoutX="23.0" layoutY="20.0" pickOnBounds="true"
+                           preserveRatio="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="23.0"
+                           AnchorPane.topAnchor="20.0">
+                    <Image url="@../../../icons/avi.jpg"/>
+                </ImageView>
+                <Label layoutX="124.0" layoutY="15.0" text="Usrname: " textFill="WHITE"/>
+                <Text fx:id="username" fill="WHITE" layoutX="217.0" layoutY="49.0" strokeType="OUTSIDE"
+                      strokeWidth="0.0" text="Text">
+                    <font>
+                        <Font name="Chiller" size="25.0"/>
+                    </font>
+                </Text>
+                <Label layoutX="126.0" layoutY="53.0" text="Posts: " textFill="WHITE"/>
+                <Text fx:id="numberOfUserPosts" fill="WHITE" layoutX="189.0" layoutY="90.0" strokeType="OUTSIDE"
+                      strokeWidth="0.0" text="Text">
+                    <font>
+                        <Font name="Chiller" size="30.0"/>
+                    </font>
+                </Text>
+            </AnchorPane>
+            <ListView id="background" stylesheets="@application.css" VBox.vgrow="ALWAYS"/>
+        </VBox>
     </AnchorPane>
 </HBox>
