@@ -156,8 +156,8 @@ public class PostRepository {
         return posts;
     }
 
-    public List<Post> getPostsByAuthor(String authorId){
-        Bson filter = Filters.eq("authorId", new ObjectId(authorId));
+    public List<Post> getPostsByAuthor(ObjectId authorId){
+        Bson filter = Filters.eq("authorId", authorId);
         FindIterable<Document> docs = collection.find(filter);
         List<Post> posts = new ArrayList<>();
         docs.forEach( doc -> posts.add(toDomain(doc)));

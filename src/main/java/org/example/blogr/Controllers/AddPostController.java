@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import org.controlsfx.validation.ValidationSupport;
 import org.example.blogr.Utils.*;
 import org.example.blogr.domain.Comment;
+import org.example.blogr.domain.Post;
 import org.example.blogr.domain.Review;
 import org.example.blogr.domain.Tag;
 import org.example.blogr.services.PostService;
@@ -80,7 +81,8 @@ public class AddPostController {
         List<Comment> comments = new ArrayList<>();
         List<Review> reviews = new ArrayList<>();
 
-        postService.createPost(title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
+        Post post = postService.createPost(title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
+        context.addUserPost(post);
         switchToHome(actionEvent);
 
     }

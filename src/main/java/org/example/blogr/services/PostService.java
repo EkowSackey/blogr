@@ -43,10 +43,21 @@ public class PostService {
         return posts;
     }
 
-    public void createPost(String title, String content, Date created,
+    public Post createPost(String title, String content, Date created,
                            Date updated, ObjectId author, List<Comment> comments,
                            List<Tag> tags, List<Review> reviews){
         Post post = new Post(title, content, created, updated, author, comments, tags, reviews);
         prepo.createPost(post);
+        return post;
+    }
+
+    public List<Post> getUserPosts(ObjectId userId){
+        List<Post> userPosts = prepo.getPostsByAuthor(userId);
+
+        if (userPosts != null){
+            return userPosts;
+        }
+
+        throw new PostNotFoundException("User has no Posts");
     }
 }
