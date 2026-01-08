@@ -15,7 +15,6 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -29,19 +28,51 @@ public class PostRepository {
         this.collection = client.getDatabase("blogrdb").getCollection("posts");
     }
 
-    private Document toDoc(Post post){
-        var d = new Document();
-        d.put("title", post.title());
-        d.put("content", post.content());
-        d.put("dateCreated", post.dateCreated());
-        d.put("lastUpdate", post.lastUpdate());
-        d.put("authorId", post.authorId());
-        d.put("comments", post.comments());
-        d.put("tags", post.tags());
-        d.put("reviews", post.reviews());
+
+    private Document toDoc(Post post) {
+        Document d = new Document()
+                .append("title", post.title())
+                .append("content", post.content())
+                .append("dateCreated", post.dateCreated())
+                .append("lastUpdate", post.lastUpdate())
+                .append("authorId", post.authorId());
+
+        List<Document> tagDocs = post.tags() == null ? List.of() :
+                post.tags().stream()
+                        .filter(Objects::nonNull)
+                        .map(tag -> new Document("name", tag.name()))
+                        .toList();
+        d.append("tags", tagDocs);
+
+        List<Document> reviewDocs = post.reviews() == null ? List.of() :
+                post.reviews().stream()
+                        .filter(Objects::nonNull)
+                        .map(review -> {
+                            Document rd = new Document("stars", review.stars());
+                            // Normalize ids: prefer ObjectId everywhere
+                            ObjectId userId = review.userId();
+                            ObjectId postId = review.postId();
+
+
+                            return rd;
+                        })
+                        .toList();
+        d.append("reviews", reviewDocs);
+
+        List<Document> commentDocs = post.comments() == null ? List.of() :
+                post.comments().stream()
+                        .filter(Objects::nonNull)
+                        .map(c -> new Document()
+                                .append("content", c.content())
+                                .append("authorId", c.authorId())
+                                .append("parentId", c.parentId())
+                                .append("createdAt", c.createdAt()))
+                        .toList();
+        d.append("comments", commentDocs);
 
         return d;
     }
+
 
     private Post toDomain(Document d){
         List<Document> tagDocs = d.getList("tags", Document.class);

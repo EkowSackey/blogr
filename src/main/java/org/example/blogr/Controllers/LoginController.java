@@ -15,7 +15,7 @@ import org.example.blogr.exceptions.InvalidCredentialsException;
 import org.example.blogr.services.UserService;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
+
 
 public class LoginController {
     @FXML private Hyperlink registerLink;
