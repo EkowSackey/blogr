@@ -1,53 +1,30 @@
 package org.example.blogr.Controllers;
 
-import javafx.fxml.FXML;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
-import org.bson.types.ObjectId;
-import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
-import org.example.blogr.domain.User;
+import org.example.blogr.domain.Post;
+import org.example.blogr.services.PostService;
 import org.example.blogr.services.UserService;
-import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.util.List;
 
 public class HomeController {
 
-    public ImageView logo;
-    public FontIcon homeButton;
-    public FontIcon searchButton;
-    public FontIcon addButton;
-    public FontIcon profileButton;
-    private ObjectId currentUserId;
-    private User currentUser;
-    @FXML public Text displayName;
+    public ListView<String> postList;
 
-    private final UserService uservice = new UserService();
+    List<Post> allPosts;
+    private final PostService postService = new PostService();
+    private final UserService userService = new UserService();
 
-    ContextUtil context = ContextUtil.getInstance();
+
 
     public void initialize(){
-        setCurrentUserId();
-        setCurrentUser();
-        setDisplayName();
+
+        allPosts = postService.getPosts();
+        displayPosts();
     }
 
-    public ObjectId getCurrentUserId() {
-        return currentUserId;
-    }
-
-    public void setCurrentUserId() {
-        this.currentUserId = context.getCurrentUserId();
-    }
-
-    public void setCurrentUser(){
-        currentUser = uservice.getMyProfile(currentUserId);
-
-    }
-
-    public void setDisplayName(){
-        displayName.setText(currentUser.username());
-    }
 
     public void switchToHome(MouseEvent mouseEvent) {
         Switcher.switchScreen(mouseEvent, Screen.HOME);
@@ -63,5 +40,17 @@ public class HomeController {
 
     public void switchToProfile(MouseEvent mouseEvent) {
         Switcher.switchScreen(mouseEvent, Screen.PROFILE);
+    }
+
+    public void displayPosts(){
+
+        for (Post p: allPosts){
+            String title = p.title();
+            String author = userService.getMyProfile(p.authorId()).username();
+            String item = String.format("Title: %s. Author: %s", title, author);
+
+            postList.getItems().add(item);
+        }
+
     }
 }

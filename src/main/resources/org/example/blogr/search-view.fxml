@@ -31,7 +31,7 @@
                 </TextField>
                 <ComboBox id="secondary" fx:id="comboBox" layoutX="332.0" layoutY="18.0" onAction="#search" prefHeight="40.0" prefWidth="150.0" promptText="Search" stylesheets="@application.css" />
             </AnchorPane>
-         <ListView id="background" stylesheets="@application.css" VBox.vgrow="ALWAYS" />
+         <ListView id="background" fx:id="resultList" stylesheets="@application.css" VBox.vgrow="ALWAYS" />
         </VBox>
     </AnchorPane>
 </HBox>
