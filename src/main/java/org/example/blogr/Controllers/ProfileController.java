@@ -1,6 +1,7 @@
 package org.example.blogr.Controllers;
 
 import javafx.event.Event;
+import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
@@ -14,6 +15,7 @@ public class ProfileController {
     public FontIcon searchButton;
     public Text username;
     public Text numberOfUserPosts;
+    public ListView<String> userPostsList;
 
     ContextUtil context = ContextUtil.getInstance();
     private List<Post> userPosts;
@@ -41,8 +43,14 @@ public class ProfileController {
     }
 
     public void displayPosts(){
+
         for (Post p: userPosts){
-            System.out.println(p);
+            String title = p.title();
+
+            String item = String.format("Title: %s", title);
+
+            userPostsList.getItems().add(item);
         }
+
     }
 }

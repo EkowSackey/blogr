@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<?import org.example.blogr.customcomponents.PostComponent?>
-<HBox xmlns="http://javafx.com/javafx/25" minHeight="700" minWidth="700" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.blogr.Controllers.HomeController">
+<HBox minHeight="700" minWidth="700" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.blogr.Controllers.HomeController">
     <AnchorPane id="secondary" stylesheets="@application.css">
         <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="5.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
             <Image url="@../../../icons/r.png" />
@@ -20,16 +21,18 @@
         <FontIcon iconColor="#323437" iconLiteral="fas-user-astronaut" iconSize="24" layoutX="19.0" layoutY="370.0" onMouseClicked="#switchToProfile" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
     </AnchorPane>
     <AnchorPane id="background" stylesheets="@application.css" HBox.hgrow="ALWAYS">
-        <Text fill="WHITE" layoutX="14.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back, ">
-            <font>
-                <Font name="Chiller" size="23.0" />
-            </font>
-        </Text>
-        <Text fx:id="displayName" fill="#c15a2a" layoutX="123.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-            <font>
-                <Font name="Chiller" size="29.0" />
-            </font>
-        </Text>
-        <PostComponent title="test title" author="me" dateCreated="today"/>
+        <!--        <PostComponent title="test title" author="me" dateCreated="today"/>-->
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <AnchorPane prefHeight="77.0" prefWidth="632.0">
+                <Text fill="WHITE" layoutX="14.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Home">
+                    <font>
+                        <Font name="Chiller" size="32.0"/>
+                    </font>
+                </Text>
+            </AnchorPane>
+            <ListView fx:id="postList" VBox.vgrow="ALWAYS"/>
+        </VBox>
     </AnchorPane>
 </HBox>

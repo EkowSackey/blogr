@@ -1,36 +1,30 @@
 package org.example.blogr.Controllers;
 
-import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
-import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
 import org.example.blogr.services.PostService;
-
+import org.example.blogr.services.UserService;
 
 import java.util.List;
 
-
 public class HomeController {
 
-    @FXML public Text displayName;
-
-    ContextUtil context = ContextUtil.getInstance();
+    public ListView<String> postList;
 
     List<Post> allPosts;
     private final PostService postService = new PostService();
+    private final UserService userService = new UserService();
+
+
 
     public void initialize(){
 
-        setDisplayName();
         allPosts = postService.getPosts();
         displayPosts();
     }
 
-    public void setDisplayName(){
-        displayName.setText(context.getCurrentUser().username());
-    }
 
     public void switchToHome(MouseEvent mouseEvent) {
         Switcher.switchScreen(mouseEvent, Screen.HOME);
@@ -49,8 +43,13 @@ public class HomeController {
     }
 
     public void displayPosts(){
+
         for (Post p: allPosts){
-            System.out.println(p);
+            String title = p.title();
+            String author = userService.getMyProfile(p.authorId()).username();
+            String item = String.format("Title: %s. Author: %s", title, author);
+
+            postList.getItems().add(item);
         }
 
     }
