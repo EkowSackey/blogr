@@ -62,7 +62,10 @@ public class ProfileController {
             pane.getChildren().add(title);
             pane.getChildren().add(author);
             pane.getChildren().add(dateCreated);
-            pane.setOnMouseClicked(mouseEvent -> System.out.println("CLicked"));
+            pane.setOnMouseClicked(mouseEvent -> {
+                context.setCurrentPost(p);
+                Switcher.switchScreen(mouseEvent, Screen.DETAIL);
+            });
 
             userPostsList.getItems().add(pane);
         }

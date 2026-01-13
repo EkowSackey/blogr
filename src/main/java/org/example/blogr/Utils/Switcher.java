@@ -1,7 +1,6 @@
 package org.example.blogr.Utils;
 
 import javafx.event.Event;
-import javafx.scene.input.MouseEvent;
 import org.example.blogr.Controllers.SceneController;
 import org.example.blogr.Controllers.Screen;
 
@@ -36,6 +35,14 @@ public class Switcher {
             case Screen.PROFILE -> {
                 try {
                     sc.switchToProfile(event);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            case Screen.DETAIL -> {
+                try {
+                    sc.switchToDetails(event);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

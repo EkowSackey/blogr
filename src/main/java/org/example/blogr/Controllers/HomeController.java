@@ -2,11 +2,11 @@ package org.example.blogr.Controllers;
 
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
 import org.example.blogr.services.PostService;
@@ -22,6 +22,7 @@ public class HomeController {
     private final PostService postService = new PostService();
     private final UserService userService = new UserService();
 
+    ContextUtil context = ContextUtil.getInstance();
 
 
     public void initialize(){
@@ -62,8 +63,10 @@ public class HomeController {
             pane.getChildren().add(title);
             pane.getChildren().add(author);
             pane.getChildren().add(dateCreated);
-            pane.setOnMouseClicked(mouseEvent -> System.out.println("CLicked"));
-
+            pane.setOnMouseClicked(mouseEvent -> {
+                context.setCurrentPost(p);
+                Switcher.switchScreen(mouseEvent, Screen.DETAIL);
+            });
             postList.getItems().add(pane);
         }
 

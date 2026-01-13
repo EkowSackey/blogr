@@ -98,6 +98,11 @@ public class SceneController {
         switchRoot(event, "/org/example/blogr/profile-view.fxml");
     }
 
+    @FXML
+    public void switchToDetails(Event event) throws IOException {
+        switchRoot(event, "/org/example/blogr/postDetail-view.fxml");
+    }
+
     private void switchRoot(Event event, String fxmlPath) throws IOException {
         URL url = SceneController.class.getResource(fxmlPath);
         Objects.requireNonNull(url, "FXML not found: " + fxmlPath);

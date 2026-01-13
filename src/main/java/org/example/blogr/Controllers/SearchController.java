@@ -10,10 +10,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.controlsfx.validation.ValidationSupport;
-import org.example.blogr.Utils.AlertErrorDisplay;
-import org.example.blogr.Utils.ErrorDisplay;
-import org.example.blogr.Utils.Switcher;
-import org.example.blogr.Utils.ValidationUtils;
+import org.example.blogr.Utils.*;
 import org.example.blogr.domain.Post;
 import org.example.blogr.domain.User;
 import org.example.blogr.services.PostService;
@@ -39,6 +36,7 @@ public class SearchController {
     private ErrorDisplay strategy;
 
 
+    ContextUtil context = ContextUtil.getInstance();
     public void initialize(){
 
         comboBox.getItems().add("Users");
@@ -104,7 +102,10 @@ public class SearchController {
             pane.getChildren().add(title);
             pane.getChildren().add(author);
             pane.getChildren().add(dateCreated);
-            pane.setOnMouseClicked(mouseEvent -> System.out.println("CLicked"));
+            pane.setOnMouseClicked(mouseEvent -> {
+                context.setCurrentPost(p);
+                Switcher.switchScreen(mouseEvent, Screen.DETAIL);
+            });
 
             resultList.getItems().add(pane);
         }

@@ -12,6 +12,7 @@ public class ContextUtil {
     private ObjectId currentUserId;
     private User currentUser;
     private List<Post> userPosts;
+    private Post currentPost;
 
     private ContextUtil(){}
 
@@ -45,5 +46,13 @@ public class ContextUtil {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public Post getCurrentPost() {
+        return currentPost;
+    }
+
+    public void setCurrentPost(Post currentPost) {
+        this.currentPost = currentPost;
     }
 }

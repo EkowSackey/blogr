@@ -21,8 +21,6 @@ public class PostService {
         return prepo.getAllPosts();
     }
 
-
-
     public List<Post> getPostsByTitle(String title){
         List<Post> posts = prepo.getPostsByTitle(title);
 

@@ -15,7 +15,7 @@ module org.example.blogr {
     requires org.mongodb.driver.core;
     requires jbcrypt;
     requires javafx.graphics;
-
+    requires javafx.media;
 
 
 
