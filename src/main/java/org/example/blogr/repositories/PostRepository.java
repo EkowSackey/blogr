@@ -97,7 +97,6 @@ public class PostRepository {
                                 doc.getString("content"),
                                 doc.getObjectId("authorId"),
                                 doc.getObjectId("parentId"),
-                                new ArrayList<>(),
                                 doc.getDate("createdAt")
                         )
                 ).toList();

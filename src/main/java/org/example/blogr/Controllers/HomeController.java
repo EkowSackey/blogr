@@ -2,6 +2,11 @@ package org.example.blogr.Controllers;
 
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
 import org.example.blogr.services.PostService;
@@ -11,7 +16,7 @@ import java.util.List;
 
 public class HomeController {
 
-    public ListView<String> postList;
+    public ListView<VBox> postList;
 
     List<Post> allPosts;
     private final PostService postService = new PostService();
@@ -45,11 +50,21 @@ public class HomeController {
     public void displayPosts(){
 
         for (Post p: allPosts){
-            String title = p.title();
-            String author = userService.getMyProfile(p.authorId()).username();
-            String item = String.format("Title: %s. Author: %s", title, author);
+            Text title = new Text(String.format("Title: %s",p.title()));
+            title.setFont(Font.font("Chiller", FontWeight.BOLD, 26));
+            Text author = new Text(String.format("Author: %s",userService.getMyProfile(p.authorId()).username()));
+            author.setFont(Font.font("Monospaced", 12));
+            Text dateCreated = new Text(String.format("Date Created: %s", p.dateCreated()));
+            dateCreated.setFont(Font.font("Monospaced", 12));
 
-            postList.getItems().add(item);
+            VBox pane = new VBox();
+            pane.setSpacing(10);
+            pane.getChildren().add(title);
+            pane.getChildren().add(author);
+            pane.getChildren().add(dateCreated);
+            pane.setOnMouseClicked(mouseEvent -> System.out.println("CLicked"));
+
+            postList.getItems().add(pane);
         }
 
     }

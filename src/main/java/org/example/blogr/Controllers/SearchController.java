@@ -5,6 +5,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import org.controlsfx.validation.ValidationSupport;
 import org.example.blogr.Utils.AlertErrorDisplay;
 import org.example.blogr.Utils.ErrorDisplay;
@@ -88,11 +92,21 @@ public class SearchController {
     public void displayResults(){
 
         for (Post p: posts){
-            String title = p.title();
-            String author = userService.getMyProfile(p.authorId()).username();
-            String item = String.format("Title: %s. Author: %s", title, author);
+            Text title = new Text(String.format("Title: %s",p.title()));
+            title.setFont(Font.font("Chiller", FontWeight.BOLD, 26));
+            Text author = new Text(String.format("Author: %s",userService.getMyProfile(p.authorId()).username()));
+            author.setFont(Font.font("Monospaced", 12));
+            Text dateCreated = new Text(String.format("Date Created: %s", p.dateCreated()));
+            dateCreated.setFont(Font.font("Monospaced", 12));
 
-            resultList.getItems().add(item);
+            VBox pane = new VBox();
+            pane.setSpacing(10);
+            pane.getChildren().add(title);
+            pane.getChildren().add(author);
+            pane.getChildren().add(dateCreated);
+            pane.setOnMouseClicked(mouseEvent -> System.out.println("CLicked"));
+
+            resultList.getItems().add(pane);
         }
 
         for (User u: users){
