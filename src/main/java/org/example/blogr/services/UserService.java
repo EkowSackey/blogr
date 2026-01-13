@@ -77,4 +77,14 @@ public class UserService {
         throw new UserNotFoundException("No users with this username");
     }
 
+    public ObjectId findUserByUsername(String searchTerm){
+        ObjectId userId = urepo.findByUsername(searchTerm);
+
+        if (userId != null){
+            return userId;
+        }
+
+        throw new UserNotFoundException("No users with this username");
+    }
+
 }

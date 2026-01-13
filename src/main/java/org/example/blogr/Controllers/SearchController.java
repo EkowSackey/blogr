@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import org.bson.types.ObjectId;
 import org.controlsfx.validation.ValidationSupport;
 import org.example.blogr.Utils.*;
 import org.example.blogr.domain.Post;
@@ -17,6 +18,8 @@ import org.example.blogr.services.PostService;
 import org.example.blogr.services.UserService;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +30,6 @@ public class SearchController {
     public TextField searchField;
 
     private final List<Post> posts = new ArrayList<>();
-    private final List<User> users = new ArrayList<>();
     private final PostService postService = new PostService();
     private final UserService userService = new UserService();
 
@@ -66,6 +68,8 @@ public class SearchController {
 
     public void search(ActionEvent actionEvent) {
 
+        Instant start = Instant.now();
+
         if (!ValidationUtils.ensureValidOrShow(vs, strategy)){
             return;
         }
@@ -75,6 +79,7 @@ public class SearchController {
         switch (searchCategory){
             case "Posts" -> {
                 if (CacheUtil.contains(searchTerm)){
+                    System.out.println("Cache hit!");
                     posts.addAll(CacheUtil.get(searchTerm));
                     break;
                 }
@@ -83,6 +88,7 @@ public class SearchController {
             }
             case  "Tags" -> {
                 if (CacheUtil.contains(searchTerm)){
+                    System.out.println("Cache hit!");
                     posts.addAll(CacheUtil.get(searchTerm));
                     break;
                 }
@@ -90,9 +96,25 @@ public class SearchController {
                 CacheUtil.put(searchTerm, posts);
             }
             case "Users" -> {
-                users.addAll(userService.findUsersByUsername(searchTerm));
+                if (CacheUtil.contains(searchTerm)){
+                    System.out.println("Cache hit!");
+                    posts.addAll(CacheUtil.get(searchTerm));
+                    break;
+                }
+
+                List<User> users = userService.findUsersByUsername(searchTerm);
+                for (User u : users){
+                    ObjectId userId = userService.findUserByUsername(u.username());
+                    var userPosts = postService.getUserPosts(userId);
+                    posts.addAll(userPosts);
+                }
+                CacheUtil.put(searchTerm, posts);
             }
         }
+
+        Instant end = Instant.now();
+        Duration timeElapsed = Duration.between(start,end);
+        System.out.println("Query time after Optimization: " + timeElapsed);
 
         displayResults();
     }
@@ -120,10 +142,5 @@ public class SearchController {
             resultList.getItems().add(pane);
         }
 
-        for (User u: users){
-            String user = u.username();
-
-            resultList.getItems().add(user);
         }
-    }
 }
