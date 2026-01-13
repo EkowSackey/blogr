@@ -74,10 +74,20 @@ public class SearchController {
 
         switch (searchCategory){
             case "Posts" -> {
+                if (CacheUtil.contains(searchTerm)){
+                    posts.addAll(CacheUtil.get(searchTerm));
+                    break;
+                }
                 posts.addAll(postService.getPostsByTitle(searchTerm));
+                CacheUtil.put(searchTerm, posts);
             }
             case  "Tags" -> {
+                if (CacheUtil.contains(searchTerm)){
+                    posts.addAll(CacheUtil.get(searchTerm));
+                    break;
+                }
                 posts.addAll(postService.getPostsByTag(searchTerm));
+                CacheUtil.put(searchTerm, posts);
             }
             case "Users" -> {
                 users.addAll(userService.findUsersByUsername(searchTerm));
