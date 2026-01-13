@@ -32,6 +32,7 @@
                 <Button fx:id="backButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToHome" text="Back" AnchorPane.leftAnchor="10.0" />
                 <Button fx:id="editButton" layoutX="102.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToEdit" text="Edit" AnchorPane.leftAnchor="80.0" />
                 <Button fx:id="reviewButton" layoutX="562.0" layoutY="10.0" mnemonicParsing="false" onAction="#displayDialog" text="Review" AnchorPane.rightAnchor="10.0" />
+            <Button id="deleteButton" fx:id="deleteButton" layoutX="146.0" layoutY="10.0" mnemonicParsing="false" onAction="#deletePost" stylesheets="@application.css" text="Delete" textFill="WHITE" />
             </AnchorPane>
             <AnchorPane prefHeight="82.0" prefWidth="642.0">
                 <Label fx:id="postTitle" layoutX="20.0" text="Post Title" textFill="WHITE" />

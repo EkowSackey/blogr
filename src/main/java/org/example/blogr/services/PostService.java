@@ -49,6 +49,10 @@ public class PostService {
         return post;
     }
 
+    public void deletePost(ObjectId postId){
+        System.out.println("IMPLEMENT MEEEE!!");
+    }
+
     public List<Post> getUserPosts(ObjectId userId){
         List<Post> userPosts = prepo.getPostsByAuthor(userId);
 

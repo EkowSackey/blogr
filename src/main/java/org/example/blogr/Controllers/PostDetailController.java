@@ -7,9 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
+import org.bson.types.ObjectId;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
+import org.example.blogr.services.PostService;
 import org.example.blogr.services.UserService;
 
 public class PostDetailController {
@@ -21,13 +23,17 @@ public class PostDetailController {
     public Text dateCreated;
     public Text lastUpdate;
     public WebView webView;
+    public Button deleteButton;
 
     ContextUtil context = ContextUtil.getInstance();
     private final Post post = context.getCurrentPost();
     private final UserService userService = new UserService();
+    private final PostService postService = new PostService();
 
     public void initialize(){
         editButton.setVisible(post.authorId().equals(context.getCurrentUserId()));
+        deleteButton.setVisible(post.authorId().equals(context.getCurrentUserId()));
+
 
         postTitle.setText(post.title());
         authorName.setText(userService.getMyProfile(post.authorId()).username());
@@ -58,5 +64,9 @@ public class PostDetailController {
     }
 
     public void displayDialog(ActionEvent actionEvent) {
+    }
+
+    public void deletePost(ActionEvent actionEvent) {
+        postService.deletePost(new ObjectId());
     }
 }

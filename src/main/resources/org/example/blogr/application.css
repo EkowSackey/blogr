@@ -19,6 +19,10 @@
 -fx-background-color: "#323437"
 }
 
+#deleteButton{
+-fx-background-color: "#ff0000"
+}
+
 #secondary{
 -fx-background-color: "#E2b714";
 }
