@@ -53,7 +53,8 @@ public class PostDetailController {
     }
 
     public void switchToEdit(ActionEvent actionEvent) {
-
+        context.setEditMode(true);
+        Switcher.switchScreen(actionEvent, Screen.ADD);
     }
 
     public void displayDialog(ActionEvent actionEvent) {

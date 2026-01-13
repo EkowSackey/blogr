@@ -196,33 +196,7 @@ public class PostRepository {
         System.out.println("added comment with id: " + commentId);
     }
 
-    public void addSubComment(String postId, Comment comment){
-        ObjectId commentId = new ObjectId();
 
-        Document commentDoc = new Document("_id", commentId)
-                .append("content", comment.content() )
-                .append("authorId", comment.authorId())
-                .append("parentId", comment.parentId())
-                .append("subComments", new ArrayList<Comment>())
-                .append("createdAt", comment.createdAt());
-
-        Bson filter = Filters.eq("_id", new ObjectId(postId));
-        Bson update = Updates.push("comments.$[parent].subComments", commentDoc );
-        UpdateOptions options = new UpdateOptions().arrayFilters(
-                List.of(new Document("parent._id", comment.parentId()))
-        );
-        UpdateResult result = collection.updateOne(filter, update, options);
-
-
-        if (result.getMatchedCount() == 0) {
-            throw new IllegalStateException("Post not found: " + postId);
-        }
-
-        if (result.getModifiedCount()==0){
-            throw new IllegalStateException("Parent comment not found at top level: " + comment.parentId());
-        }
-        System.out.println("added comment with id: " + commentId);
-    }
 
     public void deletePost(String id){
         if (!ObjectId.isValid(id)) throw new IllegalArgumentException("Invalid ObjectId format");

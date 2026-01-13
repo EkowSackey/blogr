@@ -47,6 +47,13 @@ public class AddPostController {
         ValidationUtils.bindDisableOnInvalid(postButton, vs);
 
         strategy = new AlertErrorDisplay();
+
+        if (context.isEditMode()){
+            Post post = context.getCurrentPost();
+            postTitle.setText(post.title());
+            contentField.setHtmlText(post.content());
+            postButton.setText("Update");
+        }
     }
 
     public void switchToHome(Event event) {

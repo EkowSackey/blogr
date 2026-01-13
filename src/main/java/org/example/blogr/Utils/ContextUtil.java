@@ -13,6 +13,7 @@ public class ContextUtil {
     private User currentUser;
     private List<Post> userPosts;
     private Post currentPost;
+    private boolean editMode;
 
     private ContextUtil(){}
 
@@ -54,5 +55,13 @@ public class ContextUtil {
 
     public void setCurrentPost(Post currentPost) {
         this.currentPost = currentPost;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
     }
 }
