@@ -44,13 +44,19 @@ public class PostService {
     public Post createPost(String title, String content, Date created,
                            Date updated, ObjectId author, List<Comment> comments,
                            List<Tag> tags, List<Review> reviews){
-        Post post = new Post(title, content, created, updated, author, comments, tags, reviews);
+        Post post = new Post(null, title, content, created, updated, author, comments, tags, reviews);
         prepo.createPost(post);
         return post;
     }
 
+    public void updatePost(ObjectId postId, Post newPost){
+        prepo.updatePost(postId, "title", String.format("%s (Edit)",newPost.title()));
+        prepo.updatePost(postId, "content", String.format("%s %n%n <span>This post was last edited on %s </span> %n ", newPost.content(), newPost.lastUpdate()));
+        prepo.updatePost(postId, "lastUpdate", newPost.lastUpdate());
+    }
+
     public void deletePost(ObjectId postId){
-        System.out.println("IMPLEMENT MEEEE!!");
+        prepo.deletePost(postId);
     }
 
     public List<Post> getUserPosts(ObjectId userId){

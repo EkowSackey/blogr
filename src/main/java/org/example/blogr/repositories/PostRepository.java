@@ -31,6 +31,7 @@ public class PostRepository {
 
     private Document toDoc(Post post) {
         Document d = new Document()
+                .append("postId", post.postId())
                 .append("title", post.title())
                 .append("content", post.content())
                 .append("dateCreated", post.dateCreated())
@@ -101,7 +102,7 @@ public class PostRepository {
                         )
                 ).toList();
         return new Post(
-
+                d.getObjectId("postId"),
                 d.getString("title"),
                 d.getString("content"),
                 d.getDate("dateCreated"),
@@ -163,8 +164,8 @@ public class PostRepository {
         return posts;
     }
 
-    public void updatePost(String id, String field, String value){
-        Bson filter = Filters.eq("_id", new ObjectId(id));
+    public void updatePost(ObjectId id, String field, Object value){
+        Bson filter = Filters.eq("postId", id);
         Bson updates  = Updates.set(field, value);
 
         UpdateResult result = collection.updateOne(filter, updates);
@@ -198,11 +199,10 @@ public class PostRepository {
 
 
 
-    public void deletePost(String id){
-        if (!ObjectId.isValid(id)) throw new IllegalArgumentException("Invalid ObjectId format");
-
-        Bson filter = Filters.eq("_id", new ObjectId(id));
+    public void deletePost(ObjectId id){
+        Bson filter = Filters.eq("postId", id);
         collection.findOneAndDelete(filter);
+        System.out.println("Post deleted with id: " + id);
     }
 
     public void deleteCommentById(String postId, String commentId){

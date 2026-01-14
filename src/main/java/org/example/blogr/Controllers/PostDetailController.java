@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
-import org.bson.types.ObjectId;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
@@ -67,6 +66,7 @@ public class PostDetailController {
     }
 
     public void deletePost(ActionEvent actionEvent) {
-        postService.deletePost(new ObjectId());
+        postService.deletePost(context.getCurrentPost().postId());
+        switchToHome(actionEvent);
     }
 }

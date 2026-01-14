@@ -52,7 +52,7 @@ public class AddPostController {
             Post post = context.getCurrentPost();
             postTitle.setText(post.title());
             contentField.setHtmlText(post.content());
-            postButton.setText("Update");
+            postButton.setText("Edit");
         }
     }
 
@@ -88,8 +88,15 @@ public class AddPostController {
         List<Comment> comments = new ArrayList<>();
         List<Review> reviews = new ArrayList<>();
 
-        Post post = postService.createPost(title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
-        context.addUserPost(post);
+        if (context.isEditMode()){
+            Post newPost = new Post(null, title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews );
+            postService.updatePost(context.getCurrentPost().postId(), newPost);
+        }
+
+        else{
+            Post post = postService.createPost(title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
+            context.addUserPost(post);
+        }
         switchToHome(actionEvent);
 
     }

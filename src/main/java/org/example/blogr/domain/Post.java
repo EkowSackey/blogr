@@ -5,7 +5,9 @@ import org.bson.types.ObjectId;
 import java.util.Date;
 import java.util.List;
 
-public record Post(String title,
+public record Post(
+                   ObjectId postId,
+                   String title,
                    String content,
                    Date dateCreated,
                    Date lastUpdate,
@@ -13,4 +15,10 @@ public record Post(String title,
                    List<Comment> comments,
                    List<Tag> tags,
                    List<Review> reviews)
-{}
+{
+    public Post{
+        if (postId == null){
+            postId = new ObjectId();
+        }
+    }
+}
