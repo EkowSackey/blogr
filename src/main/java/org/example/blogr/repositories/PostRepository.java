@@ -15,6 +15,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -36,7 +37,9 @@ public class PostRepository {
                 .append("content", post.content())
                 .append("dateCreated", post.dateCreated())
                 .append("lastUpdate", post.lastUpdate())
-                .append("authorId", post.authorId());
+                .append("authorId", post.authorId())
+                .append("commentCount", post.commentCount())
+                .append("avgRating", post.avgRating());
 
         List<Document> tagDocs = post.tags() == null ? List.of() :
                 post.tags().stream()
@@ -50,10 +53,10 @@ public class PostRepository {
                         .filter(Objects::nonNull)
                         .map(review -> {
                             Document rd = new Document("stars", review.stars());
-                            // Normalize ids: prefer ObjectId everywhere
                             ObjectId userId = review.userId();
                             ObjectId postId = review.postId();
 
+                            rd.append("userId", userId).append("postId", postId);
 
                             return rd;
                         })
@@ -95,6 +98,7 @@ public class PostRepository {
         List<Comment> comments = commentDocs.stream()
                 .map(
                         doc -> new Comment(
+                                doc.getObjectId("commentId"),
                                 doc.getString("content"),
                                 doc.getObjectId("authorId"),
                                 doc.getObjectId("parentId"),
@@ -109,8 +113,10 @@ public class PostRepository {
                 d.getDate("lastUpdate"),
                 d.getObjectId("authorId"),
                 comments,
+                comments.size(),
                 tags,
-                reviews
+                reviews,
+                0
         );
     }
 
@@ -172,30 +178,69 @@ public class PostRepository {
         System.out.println("Modified fields:" + result.getModifiedCount());
     }
 
-    public void addPostReview(String postId, Review review){
-        Bson filter = Filters.eq("_id", new ObjectId(postId));
-        UpdateResult result = collection.updateOne(filter, push("reviews", review));
 
+    public void addPostReview(ObjectId postId, Review review) {
+        Document newReview = new Document()
+                .append("stars", review.stars())
+                .append("postId", postId)
+                .append("userId", review.userId());
+
+        Bson filter = Filters.eq("postId", postId);
+
+
+        List<Bson> pipeline = Arrays.asList(
+                new Document("$set", new Document("reviewsNew",
+                        new Document("$concatArrays", Arrays.asList("$reviews", Arrays.asList(newReview)))
+                )),
+                new Document("$set", new Document("reviews", "$reviewsNew")),
+                new Document("$set", new Document("avgRating",
+                        new Document("$cond", Arrays.asList(
+                                new Document("$gt", Arrays.asList(
+                                        new Document("$size", "$reviewsNew"), 0
+                                )),
+                                new Document("$avg", "$reviewsNew.stars"),
+                                0
+                        ))
+                )),
+                new Document("$unset", "reviewsNew")
+        );
+
+        UpdateResult result = collection.updateOne(filter, pipeline);
+        System.out.println("modified docs: " + result.getModifiedCount());
     }
 
-    public void addComment(Comment comment){
+
+
+    public void addComment(Comment comment) {
+        ObjectId postId = comment.parentId();
         ObjectId commentId = new ObjectId();
 
-        Document commentDoc = new Document("_id", commentId)
-                .append("content", comment.content() )
+        Document newComment = new Document("commentId", commentId)
+                .append("content", comment.content())
                 .append("authorId", comment.authorId())
-                .append("parentId", comment.parentId())
-                .append("subComments", new ArrayList<Comment>())
+                .append("parentId", postId)
                 .append("createdAt", comment.createdAt());
 
-        Bson filter = Filters.eq("_id", comment.parentId());
-        UpdateResult result = collection.updateOne(filter, Updates.push("comments", commentDoc));
+        Bson filter = Filters.eq("postId", postId);
 
-        if (result.getModifiedCount()==0){
+        List<Bson> pipeline = Arrays.asList(
+                new Document("$set", new Document("commentsNew",
+                        new Document("$concatArrays", Arrays.asList("$comments", Arrays.asList(newComment)))
+                )),
+                new Document("$set", new Document("comments", "$commentsNew")),
+                new Document("$set", new Document("commentCount",
+                        new Document("$size", "$commentsNew")
+                )),
+                new Document("$unset", "commentsNew")
+        );
+
+        UpdateResult result = collection.updateOne(filter, pipeline);
+        if (result.getModifiedCount() == 0) {
             throw new IllegalStateException("Post not found or comment not added");
         }
-        System.out.println("added comment with id: " + commentId);
+        System.out.println("added comment with id: " + commentId + " to post with id: " + postId);
     }
+
 
 
 
@@ -205,9 +250,9 @@ public class PostRepository {
         System.out.println("Post deleted with id: " + id);
     }
 
-    public void deleteCommentById(String postId, String commentId){
-        Bson filter = Filters.eq("_id", new ObjectId(postId));
-        Bson update = Updates.pull("comments", new Document("_id", new ObjectId(commentId)));
+    public void deleteCommentById(ObjectId postId, ObjectId commentId){
+        Bson filter = Filters.eq("postId", postId);
+        Bson update = Updates.pull("comments", new Document("commentId", commentId));
 
         UpdateResult result = collection.updateOne(filter, update);
         System.out.println("deleted: " + result.getModifiedCount());
