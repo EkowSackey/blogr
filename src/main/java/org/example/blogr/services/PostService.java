@@ -44,7 +44,7 @@ public class PostService {
     public Post createPost(String title, String content, Date created,
                            Date updated, ObjectId author, List<Comment> comments,
                            List<Tag> tags, List<Review> reviews){
-        Post post = new Post(null, title, content, created, updated, author, comments, tags, reviews);
+        Post post = new Post(null, title, content, created, updated, author, comments, comments.size(), tags, reviews, 0);
         prepo.createPost(post);
         return post;
     }
@@ -67,5 +67,17 @@ public class PostService {
         }
 
         throw new PostNotFoundException("User has no Posts");
+    }
+
+    public void addReview(double stars, String comment, ObjectId userId, ObjectId postId){
+        Comment c = new Comment(null, comment, userId, postId, new Date() );
+        Review r = new Review(stars, userId, postId);
+
+        prepo.addPostReview(postId, r);
+        prepo.addComment(c);
+    }
+
+    public void deleteComment(ObjectId postId, ObjectId commentId){
+        prepo.deleteCommentById(postId, commentId);
     }
 }
