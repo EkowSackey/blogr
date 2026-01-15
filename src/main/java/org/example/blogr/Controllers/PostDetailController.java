@@ -98,6 +98,7 @@ public class PostDetailController {
         Switcher.switchScreen(actionEvent, Screen.ADD);
     }
 
+
     public void deletePost(ActionEvent actionEvent) {
         postService.deletePost(context.getCurrentPost().postId());
         switchToHome(actionEvent);

@@ -5,13 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.example.blogr.Utils.CacheUtil;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class BlogrApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
+        CacheUtil.invalidateAll();
         FXMLLoader fxmlLoader = new FXMLLoader(BlogrApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
         String css = Objects.requireNonNull(getClass().getResource("application.css")).toExternalForm();
