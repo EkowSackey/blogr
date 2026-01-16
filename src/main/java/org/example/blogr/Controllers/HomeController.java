@@ -50,7 +50,7 @@ public class HomeController {
 
     public void displayPosts(){
 
-        for (Post p: allPosts){
+        for (Post p: allPosts.reversed()){
             Text title = new Text(String.format("Title: %s",p.title()));
             title.setFont(Font.font("Chiller", FontWeight.BOLD, 26));
             Text author = new Text(String.format("Author: %s",userService.getMyProfile(p.authorId()).username()));
