@@ -97,6 +97,7 @@ public class AddPostController {
             Post post = postService.createPost(title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
             context.addUserPost(post);
         }
+        CacheUtil.invalidateAll();
         switchToHome(actionEvent);
 
     }

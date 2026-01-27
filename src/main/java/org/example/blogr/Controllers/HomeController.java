@@ -27,7 +27,9 @@ public class HomeController {
 
     public void initialize(){
 
+
         allPosts = postService.getPosts();
+        context.clearCurrentPost();
         displayPosts();
     }
 

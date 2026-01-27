@@ -1,0 +1,28 @@
+package org.example.blogr.services;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class UserServiceTest {
+
+    @Test
+    void register() {
+    }
+
+    @Test
+    void login() {
+    }
+
+    @Test
+    void getMyProfile() {
+    }
+
+    @Test
+    void findUsersByUsername() {
+    }
+
+    @Test
+    void findUserByUsername() {
+    }
+}

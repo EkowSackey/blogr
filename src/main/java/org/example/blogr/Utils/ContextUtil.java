@@ -4,10 +4,11 @@ import org.bson.types.ObjectId;
 import org.example.blogr.domain.Post;
 import org.example.blogr.domain.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContextUtil {
-    private static final ContextUtil instance = new ContextUtil();
+    private static final ThreadLocal<ContextUtil> instance = ThreadLocal.withInitial(ContextUtil::new);
 
     private ObjectId currentUserId;
     private User currentUser;
@@ -18,7 +19,11 @@ public class ContextUtil {
     private ContextUtil(){}
 
     public static ContextUtil getInstance(){
-        return instance;
+        return instance.get();
+    }
+
+    public static void clear(){
+        instance.remove();
     }
 
     public ObjectId getCurrentUserId(){
@@ -38,10 +43,14 @@ public class ContextUtil {
     }
 
     public void setUserPosts(List<Post> userPosts) {
-        this.userPosts = userPosts;
+        this.userPosts = userPosts != null? new ArrayList<>(userPosts) : null;
     }
 
     public void addUserPost(Post post){
+        if (this.userPosts == null){
+            this.userPosts = new ArrayList<>();
+        }
+
         this.userPosts.add(post);
     }
 
@@ -55,6 +64,10 @@ public class ContextUtil {
 
     public void setCurrentPost(Post currentPost) {
         this.currentPost = currentPost;
+    }
+
+    public void clearCurrentPost(){
+        this.currentPost = null;
     }
 
     public void setEditMode(boolean editMode) {
