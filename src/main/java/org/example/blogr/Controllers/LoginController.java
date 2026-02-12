@@ -29,7 +29,6 @@ public class LoginController {
 
     private final SceneController sc = new SceneController();
     private final ValidationSupport vs = new ValidationSupport();
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private ErrorDisplay strategy;
 
     ContextUtil context = ContextUtil.getInstance();

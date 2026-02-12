@@ -71,6 +71,7 @@ public class PostDetailController {
         ValidationUtils.bindDisableOnInvalid(sendReview, vs);
 
         strategy = new AlertErrorDisplay();
+
     }
 
     public void updateOwnership(){
@@ -78,10 +79,12 @@ public class PostDetailController {
     }
 
     public void switchToHome(Event mouseEvent) {
+        context.clearCurrentPost();
         Switcher.switchScreen(mouseEvent, Screen.HOME);
     }
 
     public void switchToSearch(MouseEvent mouseEvent) {
+
         Switcher.switchScreen(mouseEvent, Screen.SEARCH);
     }
 

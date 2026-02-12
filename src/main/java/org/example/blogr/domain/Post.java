@@ -23,8 +23,16 @@ public record Post(
             postId = new ObjectId();
         }
 
+        // Handle null comments list
+        if (comments == null){
+            comments = List.of();
+        }
         commentCount = comments.size();
 
+        // Handle null reviews list
+        if (reviews == null){
+            reviews = List.of();
+        }
 
         if (!reviews.isEmpty()){
             int count = 0;

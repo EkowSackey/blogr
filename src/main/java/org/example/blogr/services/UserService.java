@@ -15,10 +15,37 @@ import org.example.blogr.repositories.UserRepository;
 import java.util.List;
 
 
+
 public class UserService {
 
-    private final MongoClient client = MongoConfig.getClient();
-    private final UserRepository urepo = new UserRepository(client);
+    private final UserRepository urepo;
+
+    /**
+     * Default constructor that uses the production MongoDB configuration.
+     * Used by the application in production.
+     */
+    public UserService() {
+        MongoClient client = MongoConfig.getClient();
+        this.urepo = new UserRepository(client);
+    }
+
+    /**
+     * Constructor that allows specifying a database name (useful for testing).
+     * @param databaseName the database name to use
+     */
+    public UserService(String databaseName) {
+        MongoClient client = MongoConfig.getClient();
+        this.urepo = new UserRepository(client, databaseName);
+    }
+
+    /**
+     * Constructor injection for dependency injection (useful for testing with mocks).
+     * @param urepo the user repository to use
+     */
+    public UserService(UserRepository urepo) {
+        this.urepo = urepo;
+    }
+
 
     public void register(String username, String email, String password){
         User userWithUsername = urepo.findById(urepo.findByUsername(username));
@@ -36,26 +63,22 @@ public class UserService {
     }
 
     public ObjectId login(String usernameOrEmail, String password){
-        User userByUsername = urepo.findById(urepo.findByUsername(usernameOrEmail));
-        User userByEmail = urepo.findById(urepo.findByEmail(usernameOrEmail));
+        ObjectId userByUsername = urepo.findByUsername(usernameOrEmail);
+        ObjectId userByEmail = urepo.findByEmail(usernameOrEmail);
 
         if (userByEmail == null & userByUsername == null){
             throw new UserNotFoundException("User with this username  or email does not exist");
         }
-        User user;
-        if ( userByUsername != null){
-            user = userByUsername;
-        }
-        else
-            user = userByEmail;
+
+        ObjectId userId = userByUsername != null ? userByUsername : userByEmail;
+        User user = urepo.findById(userId);
 
         String storedPassword = user.password();
         if(!PasswordUtil.verify(password, storedPassword)){
             throw new InvalidCredentialsException("Invalid credentials. Try again");
         }
 
-        else
-           return urepo.findByUsername(user.username());
+        return userId;
     }
 
     public User getMyProfile(ObjectId id){
@@ -70,7 +93,7 @@ public class UserService {
     public List<User> findUsersByUsername(String searchTerm){
         List<User> users = urepo.searchByUsername(searchTerm);
 
-        if (users != null){
+        if (users != null && !users.isEmpty()){
             return users;
         }
 

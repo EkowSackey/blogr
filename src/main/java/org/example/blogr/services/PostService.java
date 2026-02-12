@@ -14,8 +14,33 @@ import java.util.Date;
 import java.util.List;
 
 public class PostService {
-    private final MongoClient client = MongoConfig.getClient();
-    private final PostRepository prepo = new PostRepository(client);
+    private final PostRepository prepo;
+
+    /**
+     * Default constructor that uses the production MongoDB configuration.
+     * Used by the application in production.
+     */
+    public PostService() {
+        MongoClient client = MongoConfig.getClient();
+        this.prepo = new PostRepository(client);
+    }
+
+    /**
+     * Constructor that allows specifying a database name (useful for testing).
+     * @param databaseName the database name to use
+     */
+    public PostService(String databaseName) {
+        MongoClient client = MongoConfig.getClient();
+        this.prepo = new PostRepository(client, databaseName);
+    }
+
+    /**
+     * Constructor injection for dependency injection (useful for testing with mocks).
+     * @param prepo the post repository to use
+     */
+    public PostService(PostRepository prepo) {
+        this.prepo = prepo;
+    }
 
     public List<Post> getPosts(){
         return prepo.getAllPosts();
@@ -24,7 +49,7 @@ public class PostService {
     public List<Post> getPostsByTitle(String title){
         List<Post> posts = prepo.getPostsByTitle(title);
 
-        if (posts == null){
+        if (posts.isEmpty()){
             throw new PostNotFoundException("Your search term didn't match any posts");
         }
 
@@ -35,7 +60,7 @@ public class PostService {
         Tag searchTag = new Tag(tag);
         List<Post> posts = prepo.getPostsByTag(searchTag);
 
-        if (posts == null){
+        if (posts.isEmpty()){
             throw new PostNotFoundException("No post with this tag.");
         }
         return posts;
@@ -44,14 +69,15 @@ public class PostService {
     public Post createPost(String title, String content, Date created,
                            Date updated, ObjectId author, List<Comment> comments,
                            List<Tag> tags, List<Review> reviews){
-        Post post = new Post(null, title, content, created, updated, author, comments, comments.size(), tags, reviews, 0);
+        int commentCount = comments == null ? 0 : comments.size();
+        Post post = new Post(null, title, content, created, updated, author, comments, commentCount, tags, reviews, 0);
         prepo.createPost(post);
         return post;
     }
 
     public void updatePost(ObjectId postId, Post newPost){
-        prepo.updatePost(postId, "title", String.format("%s (Edit)",newPost.title()));
-        prepo.updatePost(postId, "content", String.format("%s %n%n <span>This post was last edited on %s </span> %n ", newPost.content(), newPost.lastUpdate()));
+        prepo.updatePost(postId, "title", newPost.title());
+        prepo.updatePost(postId, "content", newPost.content());
         prepo.updatePost(postId, "lastUpdate", newPost.lastUpdate());
     }
 
@@ -62,7 +88,7 @@ public class PostService {
     public List<Post> getUserPosts(ObjectId userId){
         List<Post> userPosts = prepo.getPostsByAuthor(userId);
 
-        if (userPosts != null){
+        if (userPosts != null && !userPosts.isEmpty()){
             return userPosts;
         }
 

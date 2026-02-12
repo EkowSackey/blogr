@@ -7,7 +7,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
-import org.example.blogr.domain.Post;
 import org.example.blogr.domain.User;
 import org.example.blogr.exceptions.UserNotFoundException;
 import org.bson.Document;
@@ -21,9 +20,23 @@ import java.util.regex.Pattern;
 
 public class UserRepository {
     private final MongoCollection<Document> collection;
+    private static final String DEFAULT_DATABASE = "lab4";
 
+    /**
+     * Constructor that uses the default database name.
+     * @param client the MongoDB client
+     */
     public UserRepository(MongoClient client){
-        this.collection = client.getDatabase("blogrdb").getCollection("users");
+        this(client, DEFAULT_DATABASE);
+    }
+
+    /**
+     * Constructor that allows specifying a database name (useful for testing).
+     * @param client the MongoDB client
+     * @param databaseName the database name to use
+     */
+    public UserRepository(MongoClient client, String databaseName){
+        this.collection = client.getDatabase(databaseName).getCollection("users");
     }
 
     private Document toDoc(User user){
@@ -103,7 +116,7 @@ public class UserRepository {
         User u = findById(id);
 
         if (u != null)
-            collection.deleteOne(toDoc(u));
+            collection.deleteOne(Filters.eq("_id", id));
         else throw new UserNotFoundException("User with ID: " + id + " does not exist");
     }
 }
