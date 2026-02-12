@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SearchController {
     public FontIcon homeButton;
@@ -78,27 +79,33 @@ public class SearchController {
 
         switch (searchCategory){
             case "Posts" -> {
-                if (CacheUtil.contains(searchTerm)){
+                String cacheKey = searchTerm + "_" + searchCategory;
+                if (CacheUtil.contains(cacheKey)){
+
                     System.out.println("Cache hit!");
-                    posts.addAll(CacheUtil.get(searchTerm));
+                    posts.addAll(Objects.requireNonNull(CacheUtil.get(cacheKey)));
                     break;
                 }
                 posts.addAll(postService.getPostsByTitle(searchTerm));
-                CacheUtil.put(searchTerm, posts);
+                CacheUtil.put(searchTerm + "_" + searchCategory, posts);
             }
             case  "Tags" -> {
-                if (CacheUtil.contains(searchTerm)){
+                String cacheKey = searchTerm + "_" + searchCategory;
+                if (CacheUtil.contains(cacheKey)){
+
                     System.out.println("Cache hit!");
-                    posts.addAll(CacheUtil.get(searchTerm));
+                    posts.addAll(Objects.requireNonNull(CacheUtil.get(cacheKey)));
                     break;
                 }
                 posts.addAll(postService.getPostsByTag(searchTerm));
-                CacheUtil.put(searchTerm, posts);
+                CacheUtil.put(searchTerm + "_" + searchCategory, posts);
             }
             case "Users" -> {
-                if (CacheUtil.contains(searchTerm)){
+                String cacheKey = searchTerm + "_" + searchCategory;
+                if (CacheUtil.contains(cacheKey)){
+
                     System.out.println("Cache hit!");
-                    posts.addAll(CacheUtil.get(searchTerm));
+                    posts.addAll(Objects.requireNonNull(CacheUtil.get(cacheKey)));
                     break;
                 }
 
@@ -108,7 +115,7 @@ public class SearchController {
                     var userPosts = postService.getUserPosts(userId);
                     posts.addAll(userPosts);
                 }
-                CacheUtil.put(searchTerm, posts);
+                CacheUtil.put(searchTerm + "_" + searchCategory, posts);
             }
         }
 
@@ -141,6 +148,5 @@ public class SearchController {
 
             resultList.getItems().add(pane);
         }
-
-        }
+    }
 }

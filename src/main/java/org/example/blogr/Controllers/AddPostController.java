@@ -91,6 +91,7 @@ public class AddPostController {
         if (context.isEditMode()){
             Post newPost = new Post(null, title, content, dateCreated, lastUpdate, authorId, comments,0, tags, reviews, 0 );
             postService.updatePost(context.getCurrentPost().postId(), newPost);
+            context.setEditMode(false);
         }
 
         else{

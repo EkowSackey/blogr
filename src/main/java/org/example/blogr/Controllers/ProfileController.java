@@ -1,11 +1,14 @@
 package org.example.blogr.Controllers;
 
 import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import org.example.blogr.Utils.CacheUtil;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
@@ -20,6 +23,8 @@ public class ProfileController {
     public Text username;
     public Text numberOfUserPosts;
     public ListView<VBox> userPostsList;
+
+    @FXML public Button logoutButton;
 
     ContextUtil context = ContextUtil.getInstance();
     private final UserService userService = new UserService();
@@ -70,5 +75,11 @@ public class ProfileController {
             userPostsList.getItems().add(pane);
         }
 
+    }
+
+    public void logout(Event event){
+        context.clearUserData();
+        CacheUtil.invalidateAll();
+        Switcher.switchScreen(event, Screen.LOGIN);
     }
 }

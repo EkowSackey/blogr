@@ -28,7 +28,7 @@ public class SceneController {
      * @throws IOException the io exception
      */
     @FXML
-    public void switchToLogin(ActionEvent event) throws IOException {
+    public void switchToLogin(Event event) throws IOException {
         switchRoot(event, "/org/example/blogr/login-view.fxml");
     }
 

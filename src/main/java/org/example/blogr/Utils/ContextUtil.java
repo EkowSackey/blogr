@@ -22,8 +22,12 @@ public class ContextUtil {
         return instance.get();
     }
 
-    public static void clear(){
-        instance.remove();
+    public void clearUserData(){
+        this.currentUserId = null;
+        this.currentUser = null;
+        this.userPosts = null;
+        this.currentPost = null;
+        this.editMode = false;
     }
 
     public ObjectId getCurrentUserId(){

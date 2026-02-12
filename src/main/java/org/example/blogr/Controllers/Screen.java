@@ -5,5 +5,6 @@ public enum Screen {
     SEARCH,
     ADD,
     PROFILE,
-    DETAIL
+    DETAIL,
+    LOGIN
 }

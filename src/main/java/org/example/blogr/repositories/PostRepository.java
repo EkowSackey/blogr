@@ -24,9 +24,23 @@ import static com.mongodb.client.model.Updates.push;
 
 public class PostRepository {
     private final MongoCollection<Document> collection;
+    private static final String DEFAULT_DATABASE = "lab4";
 
+    /**
+     * Constructor that uses the default database name.
+     * @param client the MongoDB client
+     */
     public PostRepository(MongoClient client){
-        this.collection = client.getDatabase("blogrdb").getCollection("posts");
+        this(client, DEFAULT_DATABASE);
+    }
+
+    /**
+     * Constructor that allows specifying a database name (useful for testing).
+     * @param client the MongoDB client
+     * @param databaseName the database name to use
+     */
+    public PostRepository(MongoClient client, String databaseName){
+        this.collection = client.getDatabase(databaseName).getCollection("posts");
     }
 
 
@@ -138,7 +152,7 @@ public class PostRepository {
     public Post getPostById(String id){
         if (!ObjectId.isValid(id)) throw new IllegalArgumentException("Invalid ObjectId format");
 
-        Bson filter = Filters.eq("_id", new ObjectId(id));
+        Bson filter = Filters.eq("postId", new ObjectId(id));
         Document doc = collection.find(filter).first();
         if (doc != null)
             return toDomain(doc);

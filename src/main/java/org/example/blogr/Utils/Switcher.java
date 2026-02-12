@@ -47,6 +47,14 @@ public class Switcher {
                     throw new RuntimeException(e);
                 }
             }
+
+            case Screen.LOGIN -> {
+                try {
+                    sc.switchToLogin(event);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }
