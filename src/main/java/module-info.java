@@ -23,5 +23,7 @@ module org.example.blogr {
     exports org.example.blogr;
     exports org.example.blogr.Controllers;
     opens org.example.blogr.Controllers to javafx.fxml;
+    exports org.example.blogr.components;
+    opens org.example.blogr.components to javafx.fxml;
 
 }

@@ -1,38 +1,47 @@
 package org.example.blogr.Controllers;
 
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.Switcher;
+import org.example.blogr.components.PostListCell;
 import org.example.blogr.domain.Post;
 import org.example.blogr.services.PostService;
-import org.example.blogr.services.UserService;
 
 import java.util.List;
 
 public class HomeController {
 
-    public ListView<VBox> postList;
+    @FXML
+    public ListView<Post> postList;
 
-    List<Post> allPosts;
+    private List<Post> allPosts;
     private final PostService postService = new PostService();
-    private final UserService userService = new UserService();
-
+    
     ContextUtil context = ContextUtil.getInstance();
 
-
     public void initialize(){
-
-
         allPosts = postService.getPosts();
         context.clearCurrentPost();
+        
+        // Use custom cell factory
+        postList.setCellFactory(param -> {
+            PostListCell cell = new PostListCell();
+            // Add click listener to the cell
+            cell.setOnMouseClicked(event -> {
+                if (!cell.isEmpty() && cell.getItem() != null) {
+                    context.setCurrentPost(cell.getItem());
+                    // We need to handle the switch manually since we are inside a cell
+                    Switcher.switchScreen(event, Screen.DETAIL);
+                }
+            });
+            return cell;
+        });
+
         displayPosts();
     }
-
 
     public void switchToHome(MouseEvent mouseEvent) {
         Switcher.switchScreen(mouseEvent, Screen.HOME);
@@ -51,26 +60,8 @@ public class HomeController {
     }
 
     public void displayPosts(){
-
-        for (Post p: allPosts.reversed()){
-            Text title = new Text(String.format("Title: %s",p.title()));
-            title.setFont(Font.font("Chiller", FontWeight.BOLD, 26));
-            Text author = new Text(String.format("Author: %s",userService.getMyProfile(p.authorId()).username()));
-            author.setFont(Font.font("Monospaced", 12));
-            Text dateCreated = new Text(String.format("Date Created: %s", p.dateCreated()));
-            dateCreated.setFont(Font.font("Monospaced", 12));
-
-            VBox pane = new VBox();
-            pane.setSpacing(10);
-            pane.getChildren().add(title);
-            pane.getChildren().add(author);
-            pane.getChildren().add(dateCreated);
-            pane.setOnMouseClicked(mouseEvent -> {
-                context.setCurrentPost(p);
-                Switcher.switchScreen(mouseEvent, Screen.DETAIL);
-            });
-            postList.getItems().add(pane);
+        if (allPosts != null) {
+             postList.setItems(FXCollections.observableArrayList(allPosts.reversed()));
         }
-
     }
 }

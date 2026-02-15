@@ -6,10 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import org.bson.types.ObjectId;
 import org.controlsfx.validation.ValidationSupport;
@@ -25,17 +22,18 @@ public class PostDetailController {
     public Button backButton;
     public Button editButton;
     public Label postTitle;
-    public Text authorName;
-    public Text dateCreated;
-    public Text lastUpdate;
+    public Label authorName;
+    public Label dateCreated;
+    public Label lastUpdate;
     public WebView webView;
     public Button deleteButton;
-    public AnchorPane reviewPane;
+    public VBox reviewPane;
     public Slider ratingSlider;
+    public Label ratingValue;
     public TextArea commentArea;
-    public Text avgRating;
-    public Text commentCount;
-    public ListView<Object> commentList;
+    public Label avgRating;
+    public Label commentCount;
+    public ListView<VBox> commentList;
     public Button sendReview;
 
     ContextUtil context = ContextUtil.getInstance();
@@ -49,20 +47,32 @@ public class PostDetailController {
     private final BooleanProperty isOwner = new SimpleBooleanProperty(false);
 
     public void initialize(){
+        if (post == null) return;
+        
         updateOwnership();
         editButton.setVisible(post.authorId().equals(context.getCurrentUserId()));
         deleteButton.setVisible(post.authorId().equals(context.getCurrentUserId()));
-
+        
+        // Bind review pane visibility
         reviewPane.managedProperty().bind(reviewPane.visibleProperty());
         reviewPane.visibleProperty().bind(isOwner.not());
+        
+        // Bind slider value to label
+        ratingValue.textProperty().bind(ratingSlider.valueProperty().asString("%.1f"));
 
         postTitle.setText(post.title());
-        authorName.setText(userService.getMyProfile(post.authorId()).username());
+        try {
+             var author = userService.getMyProfile(post.authorId());
+             authorName.setText(author != null ? author.username() : "Unknown");
+        } catch (Exception e) {
+             authorName.setText("Unknown");
+        }
+        
         dateCreated.setText(String.valueOf(post.dateCreated()));
         lastUpdate.setText(String.valueOf(post.lastUpdate()));
         webView.getEngine().loadContent(post.content());
-        commentCount.setText(String.valueOf(post.commentCount()));
-        avgRating.setText(String.valueOf(post.avgRating()));
+        commentCount.setText("(" + post.commentCount() + ")");
+        avgRating.setText(String.format("%.1f", post.avgRating()));
 
         displayComments();
 
@@ -75,7 +85,9 @@ public class PostDetailController {
     }
 
     public void updateOwnership(){
-        isOwner.set(post.authorId().equals(context.getCurrentUserId()));
+        if (post != null) {
+            isOwner.set(post.authorId().equals(context.getCurrentUserId()));
+        }
     }
 
     public void switchToHome(Event mouseEvent) {
@@ -119,34 +131,45 @@ public class PostDetailController {
         ObjectId postId = context.getCurrentPost().postId();
 
         postService.addReview(stars, comment, userId, postId);
-        initialize();
-
+        // Refresh by switching back and forth or just re-initializing if possible
+        // Ideally should just reload data, but for now switch is safe
+        refresh(actionEvent);
     }
 
     public void displayComments(){
         List<Comment> comments = post.comments();
+        commentList.getItems().clear();
 
         for (Comment c : comments){
-            Text content = new Text(c.content());
-            content.setFont(Font.font("Monospaced", 24));
-            Text author = new Text(userService.getMyProfile(c.authorId()).username());
-            author.setFont(Font.font("Monospaced", 10));
-            Text madeAt = new Text(String.valueOf(c.createdAt()));
-            madeAt.setFont(Font.font("Monospaced", 8));
+            Label content = new Label(c.content());
+            content.getStyleClass().add("text");
+            content.setWrapText(true);
+            
+            Label author = new Label(userService.getMyProfile(c.authorId()).username());
+            author.getStyleClass().add("text");
+            author.setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+            
+            Label madeAt = new Label(String.valueOf(c.createdAt()));
+            madeAt.getStyleClass().add("text");
+            madeAt.setStyle("-fx-font-size: 10px; -fx-text-fill: #888888;");
 
             Button deleteButton = new Button("Delete");
+            deleteButton.getStyleClass().add("button");
+            deleteButton.setStyle("-fx-background-color: #D32F2F; -fx-font-size: 10px; -fx-padding: 2 5 2 5;");
             deleteButton.setVisible(c.authorId().equals(context.getCurrentUserId()));
             deleteButton.setOnMouseClicked( mouseEvent -> {
                 deleteComment(mouseEvent, context.getCurrentPost().postId(), c.commentId());
-                refresh(mouseEvent);
             });
 
-            VBox pane = new VBox();
-            pane.setSpacing(5);
+            VBox pane = new VBox(5);
+            pane.setStyle("-fx-background-color: #333333; -fx-padding: 10; -fx-background-radius: 5;");
             pane.getChildren().add(author);
             pane.getChildren().add(madeAt);
             pane.getChildren().add(content);
-            pane.getChildren().add(deleteButton);
+            
+            if (deleteButton.isVisible()) {
+                pane.getChildren().add(deleteButton);
+            }
 
             commentList.getItems().add(pane);
         }
@@ -154,6 +177,13 @@ public class PostDetailController {
 
     private void refresh(Event event){
         Switcher.switchScreen(event, Screen.HOME);
+        // Note: This double switch might be jarring but it's how the original code worked to refresh.
+        // Better: reload data in place. But I'll stick to legacy behavior for now to minimize logic bugs.
+        // Actually, let's just go home for simpler UX or try to reload.
+        // context.setCurrentPost(postService.getPost(post.postId())); 
+        // initialize();
+        // Since I don't want to change too much logic, I'll keep the switch to Detail.
+        // But Screen.DETAIL logic in Switcher might need context set.
         Switcher.switchScreen(event, Screen.DETAIL);
     }
 

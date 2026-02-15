@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -8,7 +9,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.web.HTMLEditor?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -24,30 +24,35 @@
     </AnchorPane>
     <AnchorPane id="background" stylesheets="@application.css" HBox.hgrow="ALWAYS">
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-              AnchorPane.topAnchor="0.0">
-            <AnchorPane prefHeight="195.0" prefWidth="632.0">
-                <Label layoutX="14.0" text="Create a Post" textFill="WHITE"/>
-                <TextField fx:id="postTitle" layoutX="149.0" layoutY="42.0" prefHeight="46.0" prefWidth="360.0">
-                    <font>
-                        <Font name="Chiller" size="20.0"/>
-                    </font>
-                </TextField>
-                <Label layoutX="103.0" layoutY="40.0" text="Title" textFill="WHITE"/>
-                <Button fx:id="postButton" layoutX="523.0" layoutY="37.0" mnemonicParsing="false"
-                        onAction="#createPost" prefHeight="34.0" prefWidth="62.0" text="Post"/>
-                <Label layoutX="61.0" layoutY="89.0" text="Add tags" textFill="WHITE"/>
-                <TextField fx:id="addTagField" layoutX="149.0" layoutY="101.0" prefHeight="41.0"
-                           prefWidth="255.0">
-                    <font>
-                        <Font name="Chiller" size="20.0"/>
-                    </font>
-                </TextField>
-                <Button fx:id="addTagButton" layoutX="412.0" layoutY="96.0" mnemonicParsing="false"
-                        onAction="#addTag" prefHeight="34.0" prefWidth="62.0" text="Add"/>
-                <Label layoutX="64.0" layoutY="135.0" text="Content" textFill="WHITE"/>
-            </AnchorPane>
-            <HTMLEditor fx:id="contentField" prefHeight="200.0" prefWidth="506.0"
-                        style="-fx-background-color: black;" VBox.vgrow="ALWAYS"/>
+              AnchorPane.topAnchor="0.0" spacing="20">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            
+            <Label text="Create a Post" styleClass="h1" textFill="WHITE"/>
+            
+            <VBox spacing="5">
+                <Label text="Title" styleClass="text"/>
+                <TextField fx:id="postTitle" promptText="Enter post title..." prefHeight="40.0" styleClass="text-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Tags" styleClass="text"/>
+                <HBox spacing="10">
+                    <TextField fx:id="addTagField" promptText="Add a tag..." prefHeight="40.0" HBox.hgrow="ALWAYS" styleClass="text-field"/>
+                    <Button fx:id="addTagButton" mnemonicParsing="false" onAction="#addTag" prefHeight="40.0" text="Add" />
+                </HBox>
+            </VBox>
+
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <Label text="Content" styleClass="text"/>
+                <HTMLEditor fx:id="contentField" prefHeight="400.0" style="-fx-background-color: #333333;" VBox.vgrow="ALWAYS"/>
+            </VBox>
+            
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                 <Button mnemonicParsing="false" onAction="#switchToHome" prefHeight="40.0" text="Cancel" style="-fx-background-color: transparent; -fx-text-fill: #E0E0E0; -fx-border-color: #555; -fx-border-radius: 4;"/>
+                 <Button fx:id="postButton" mnemonicParsing="false" onAction="#createPost" prefHeight="40.0" prefWidth="100.0" text="Publish"/>
+            </HBox>
         </VBox>
     </AnchorPane>
 </HBox>
