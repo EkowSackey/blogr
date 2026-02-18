@@ -1,8 +1,6 @@
 package org.example.blogr.services;
 
-import com.mongodb.client.MongoClient;
 import org.bson.types.ObjectId;
-import org.example.blogr.Config.MongoConfig;
 import org.example.blogr.domain.Comment;
 import org.example.blogr.domain.Post;
 import org.example.blogr.domain.Review;
@@ -14,36 +12,18 @@ import java.util.Date;
 import java.util.List;
 
 public class PostService {
-    private final PostRepository prepo;
+    private final PostRepository postRepository;
 
     /**
-     * Default constructor that uses the production MongoDB configuration.
-     * Used by the application in production.
+     * Constructor injection for dependency injection.
+     * @param postRepository the post repository to use
      */
-    public PostService() {
-        MongoClient client = MongoConfig.getClient();
-        this.prepo = new PostRepository(client);
-    }
-
-    /**
-     * Constructor that allows specifying a database name (useful for testing).
-     * @param databaseName the database name to use
-     */
-    public PostService(String databaseName) {
-        MongoClient client = MongoConfig.getClient();
-        this.prepo = new PostRepository(client, databaseName);
-    }
-
-    /**
-     * Constructor injection for dependency injection (useful for testing with mocks).
-     * @param prepo the post repository to use
-     */
-    public PostService(PostRepository prepo) {
-        this.prepo = prepo;
+    public PostService(PostRepository postRepository) {
+        this.postRepository = postRepository;
     }
 
     public List<Post> getPosts(){
-        return prepo.getAllPosts();
+        return postRepository.getAllPosts();
     }
 
     public List<Post> getPostsByTitle(String title){
@@ -67,13 +47,13 @@ public class PostService {
     }
 
     public void updatePost(ObjectId postId, Post newPost){
-        prepo.updatePost(postId, "title", newPost.title());
-        prepo.updatePost(postId, "content", newPost.content());
-        prepo.updatePost(postId, "lastUpdate", newPost.lastUpdate());
+        postRepository.updatePost(postId, "title", newPost.title());
+        postRepository.updatePost(postId, "content", newPost.content());
+        postRepository.updatePost(postId, "lastUpdate", newPost.lastUpdate());
     }
 
     public void deletePost(ObjectId postId){
-        prepo.deletePost(postId);
+        postRepository.deletePost(postId);
     }
 
     public List<Post> getUserPosts(ObjectId userId){
@@ -86,12 +66,12 @@ public class PostService {
         Comment c = new Comment(commentId, comment, userId, postId, new Date() );
         Review r = new Review(stars, userId, postId);
 
-        prepo.addPostReview(postId, r);
-        prepo.addComment(c);
+        postRepository.addPostReview(postId, r);
+        postRepository.addComment(c);
     }
 
     public void deleteComment(ObjectId postId, ObjectId commentId){
-        prepo.deleteCommentById(postId, commentId);
+        postRepository.deleteCommentById(postId, commentId);
     }
 
     public Post getPostById(ObjectId id){

@@ -11,6 +11,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.example.blogr.Utils.CacheUtil;
 import org.example.blogr.Utils.ContextUtil;
+import org.example.blogr.Utils.ServiceLocator;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.components.PostListCell;
 import org.example.blogr.domain.Post;
@@ -29,7 +30,7 @@ public class ProfileController {
     @FXML public Button logoutButton;
 
     ContextUtil context = ContextUtil.getInstance();
-    private final UserService userService = new UserService();
+    private final UserService userService = ServiceLocator.getUserService();
     private List<Post> userPosts;
 
     public void initialize(){

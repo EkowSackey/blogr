@@ -36,7 +36,7 @@ public class AddPostController {
 
     private ErrorDisplay strategy;
     private final ValidationSupport vs = new ValidationSupport();
-    private final PostService postService = new PostService();
+    private final PostService postService = ServiceLocator.getPostService();
 
     ContextUtil context = ContextUtil.getInstance();
 

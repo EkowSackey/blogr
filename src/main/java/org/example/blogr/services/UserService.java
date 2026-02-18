@@ -1,8 +1,6 @@
 package org.example.blogr.services;
 
-import com.mongodb.client.MongoClient;
 import org.bson.types.ObjectId;
-import org.example.blogr.Config.MongoConfig;
 import org.example.blogr.Utils.PasswordUtil;
 import org.example.blogr.domain.Role;
 import org.example.blogr.domain.User;
@@ -14,46 +12,25 @@ import org.example.blogr.repositories.UserRepository;
 
 import java.util.List;
 
-
-
 public class UserService {
 
-    private final UserRepository urepo;
+    private final UserRepository userRepository;
 
     /**
-     * Default constructor that uses the production MongoDB configuration.
-     * Used by the application in production.
+     * Constructor injection for dependency injection.
+     * @param userRepository the user repository to use
      */
-    public UserService() {
-        MongoClient client = MongoConfig.getClient();
-        this.urepo = new UserRepository(client);
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
-
-    /**
-     * Constructor that allows specifying a database name (useful for testing).
-     * @param databaseName the database name to use
-     */
-    public UserService(String databaseName) {
-        MongoClient client = MongoConfig.getClient();
-        this.urepo = new UserRepository(client, databaseName);
-    }
-
-    /**
-     * Constructor injection for dependency injection (useful for testing with mocks).
-     * @param urepo the user repository to use
-     */
-    public UserService(UserRepository urepo) {
-        this.urepo = urepo;
-    }
-
 
     public void register(String username, String email, String password){
-        User userWithUsername = urepo.findById(urepo.findByUsername(username));
+        User userWithUsername = userRepository.findById(userRepository.findByUsername(username));
         if (userWithUsername != null){
             throw new DuplicateUsernameException("User with this username already exists");
         }
 
-        User userWithEmail = urepo.findById(urepo.findByEmail(email));
+        User userWithEmail = userRepository.findById(userRepository.findByEmail(email));
         if (userWithEmail != null){
             throw new DuplicateEmailException("User with this email already exists");
         }
@@ -63,15 +40,15 @@ public class UserService {
     }
 
     public ObjectId login(String usernameOrEmail, String password){
-        ObjectId userByUsername = urepo.findByUsername(usernameOrEmail);
-        ObjectId userByEmail = urepo.findByEmail(usernameOrEmail);
+        ObjectId userByUsername = userRepository.findByUsername(usernameOrEmail);
+        ObjectId userByEmail = userRepository.findByEmail(usernameOrEmail);
 
-        if (userByEmail == null & userByUsername == null){
+        if (userByEmail == null && userByUsername == null){
             throw new UserNotFoundException("User with this username  or email does not exist");
         }
 
         ObjectId userId = userByUsername != null ? userByUsername : userByEmail;
-        User user = urepo.findById(userId);
+        User user = userRepository.findById(userId);
 
         String storedPassword = user.password();
         if(!PasswordUtil.verify(password, storedPassword)){
@@ -82,7 +59,7 @@ public class UserService {
     }
 
     public User getMyProfile(ObjectId id){
-        User u = urepo.findById(id);
+        User u = userRepository.findById(id);
         if (u != null){
             return u;
         }
@@ -96,7 +73,7 @@ public class UserService {
     }
 
     public ObjectId findUserByUsername(String searchTerm){
-        ObjectId userId = urepo.findByUsername(searchTerm);
+        ObjectId userId = userRepository.findByUsername(searchTerm);
 
         if (userId != null){
             return userId;

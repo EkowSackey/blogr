@@ -264,7 +264,7 @@ class PostServiceTest {
             List<Post> posts = postService.getPosts();
             ObjectId postId = posts.get(0).postId();
 
-            Post updatedPost = new Post(
+            Post updatedPost = Post.createWithCalculatedFields(
                 null,
                 "Updated Title",
                 "<p>Updated content</p>",

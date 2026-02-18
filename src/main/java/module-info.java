@@ -16,7 +16,7 @@ module org.example.blogr {
     requires jbcrypt;
     requires javafx.graphics;
     requires javafx.media;
-
+    requires org.slf4j;
 
 
     opens org.example.blogr to javafx.fxml;

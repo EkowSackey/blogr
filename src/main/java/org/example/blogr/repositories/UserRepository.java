@@ -13,6 +13,8 @@ import org.example.blogr.exceptions.UserNotFoundException;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class UserRepository {
+    private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
     private final MongoCollection<Document> collection;
     private static final String DEFAULT_DATABASE = "lab4";
 
@@ -60,9 +63,7 @@ public class UserRepository {
     public void createUser(User user){
         var doc = toDoc(user);
         InsertOneResult result = collection.insertOne(doc);
-        System.out.println("Inserted a document with the following id: "
-                + Objects.requireNonNull(result.getInsertedId())
-                .asObjectId().getValue());
+        logger.info("Inserted a document with the following id: {}", Objects.requireNonNull(result.getInsertedId()).asObjectId().getValue());
     }
 
     public List<User> getAllUsers(){
@@ -110,7 +111,7 @@ public class UserRepository {
         Bson update = Updates.set(field, value);
 
         UpdateResult result = collection.updateOne(filter, update);
-        System.out.println("Modified fields:" + result.getModifiedCount());
+        logger.info("Modified fields: {}", result.getModifiedCount());
     }
 
     public void deleteUser(ObjectId id){

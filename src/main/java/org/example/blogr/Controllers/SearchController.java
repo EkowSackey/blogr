@@ -30,8 +30,8 @@ public class SearchController {
     public TextField searchField;
 
     private final List<Post> posts = new ArrayList<>();
-    private final PostService postService = new PostService();
-    private final UserService userService = new UserService();
+    private final PostService postService = ServiceLocator.getPostService();
+    private final UserService userService = ServiceLocator.getUserService();
 
     private final ValidationSupport vs = new ValidationSupport();
     public ListView<Post> resultList;
