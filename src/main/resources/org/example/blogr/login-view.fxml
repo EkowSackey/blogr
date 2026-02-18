@@ -9,38 +9,48 @@
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="background" minHeight="700" minWidth="700" stylesheets="@application.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.blogr.Controllers.LoginController">
-    <Label layoutX="93.0" layoutY="115.0" text="usrname or email" textFill="WHITE" />
-    <Label layoutX="186.0" layoutY="184.0" text="passwrd" textFill="WHITE" />
-    <Button fx:id="loginButton" layoutX="270.0" layoutY="255.0" mnemonicParsing="false" onAction="#submitData" text="Login" />
-    <Text fill="WHITE" layoutX="189.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign into your blogr account">
+<VBox id="background" alignment="CENTER" spacing="20" minHeight="700" minWidth="700" stylesheets="@application.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.blogr.Controllers.LoginController">
+    <padding>
+        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+    </padding>
+
+    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+        <Image url="@../../../icons/r.png" />
+    </ImageView>
+
+    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign into your blogr account">
         <font>
           <Font name="Chiller" size="24.0" />
         </font>
     </Text>
-    <Hyperlink fx:id="registerLink" layoutX="386.0" layoutY="269.0" onAction="#switchToRegister" text="don't have an account? Register" textFill="WHITE">
+
+    <VBox spacing="5" maxWidth="400">
+        <Label text="Username or Email" textFill="WHITE" />
+        <TextField fx:id="usernameOrEmailField" promptText="email or username" stylesheets="@application.css">
+            <font>
+              <Font name="Chiller" size="24.0" />
+            </font>
+        </TextField>
+    </VBox>
+
+    <VBox spacing="5" maxWidth="400">
+        <Label text="Password" textFill="WHITE" />
+        <PasswordField fx:id="passwordField" promptText="enter your password">
+          <font>
+             <Font name="Chiller" size="24.0" />
+          </font>
+       </PasswordField>
+    </VBox>
+
+    <Button fx:id="loginButton" mnemonicParsing="false" onAction="#submitData" text="Login" prefWidth="200"/>
+
+    <Hyperlink fx:id="registerLink" onAction="#switchToRegister" text="Don't have an account? Register" textFill="WHITE">
         <effect>
           <Glow />
         </effect>
     </Hyperlink>
-    <TextField fx:id="usernameOrEmailField" layoutX="270.0" layoutY="112.0" prefWidth="400.0" promptText="email or username" stylesheets="@application.css">
-        <font>
-          <Font name="Chiller" size="24.0" />
-        </font>
-    </TextField>
-    <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-        <Image url="@../../../icons/r.png" />
-    </ImageView>
-   <PasswordField fx:id="passwordField" layoutX="270.0" layoutY="181.0" prefWidth="400.0" promptText="enter your password">
-      <font>
-         <Font name="Chiller" size="24.0" />
-      </font>
-   </PasswordField>
-   <padding>
-      <Insets bottom="50.0" left="100.0" right="50.0" top="100.0" />
-   </padding>
-</AnchorPane>
+</VBox>

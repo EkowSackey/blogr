@@ -1,5 +1,6 @@
 package org.example.blogr.Controllers;
 
+import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,6 +13,7 @@ import org.example.blogr.Utils.CacheUtil;
 import org.example.blogr.Utils.ContextUtil;
 import org.example.blogr.Utils.ServiceLocator;
 import org.example.blogr.Utils.Switcher;
+import org.example.blogr.components.PostListCell;
 import org.example.blogr.domain.Post;
 import org.example.blogr.services.UserService;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -23,7 +25,7 @@ public class ProfileController {
     public FontIcon searchButton;
     public Text username;
     public Text numberOfUserPosts;
-    public ListView<VBox> userPostsList;
+    public ListView<Post> userPostsList;
 
     @FXML public Button logoutButton;
 
@@ -35,6 +37,19 @@ public class ProfileController {
         username.setText(context.getCurrentUser().username());
         userPosts = context.getUserPosts();
         numberOfUserPosts.setText(String.valueOf(userPosts.size()));
+        
+        // Use PostListCell
+        userPostsList.setCellFactory(param -> {
+            PostListCell cell = new PostListCell();
+            cell.setOnMouseClicked(event -> {
+                if (!cell.isEmpty() && cell.getItem() != null) {
+                    context.setCurrentPost(cell.getItem());
+                    Switcher.switchScreen(event, Screen.DETAIL);
+                }
+            });
+            return cell;
+        });
+
         displayPosts();
     }
     public void switchToHome(Event event) {
@@ -54,28 +69,9 @@ public class ProfileController {
     }
 
     public void displayPosts(){
-
-        for (Post p: userPosts.reversed()){
-            Text title = new Text(String.format("Title: %s",p.title()));
-            title.setFont(Font.font("Chiller", FontWeight.BOLD, 26));
-            Text author = new Text(String.format("Author: %s",userService.getMyProfile(p.authorId()).username()));
-            author.setFont(Font.font("Monospaced", 12));
-            Text dateCreated = new Text(String.format("Date Created: %s", p.dateCreated()));
-            dateCreated.setFont(Font.font("Monospaced", 12));
-
-            VBox pane = new VBox();
-            pane.setSpacing(10);
-            pane.getChildren().add(title);
-            pane.getChildren().add(author);
-            pane.getChildren().add(dateCreated);
-            pane.setOnMouseClicked(mouseEvent -> {
-                context.setCurrentPost(p);
-                Switcher.switchScreen(mouseEvent, Screen.DETAIL);
-            });
-
-            userPostsList.getItems().add(pane);
+        if (userPosts != null) {
+            userPostsList.setItems(FXCollections.observableArrayList(userPosts.reversed()));
         }
-
     }
 
     public void logout(Event event){

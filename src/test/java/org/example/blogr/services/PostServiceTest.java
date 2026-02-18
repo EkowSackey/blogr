@@ -134,12 +134,14 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("getPostsByTitle - should throw PostNotFoundException when no matches")
+        @DisplayName("getPostsByTitle - should return empty list when no matches")
         void getPostsByTitle_notFound() {
-            // Act & Assert
-            assertThrows(PostNotFoundException.class, () ->
-                postService.getPostsByTitle("NonExistent")
-            );
+            // Act
+            List<Post> result = postService.getPostsByTitle("NonExistent");
+
+            // Assert
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
         }
 
         @Test
@@ -167,12 +169,14 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("getPostsByTag - should throw PostNotFoundException when no matches")
+        @DisplayName("getPostsByTag - should return empty list when no matches")
         void getPostsByTag_notFound() {
-            // Act & Assert
-            assertThrows(PostNotFoundException.class, () ->
-                postService.getPostsByTag("nonexistent")
-            );
+            // Act
+            List<Post> result = postService.getPostsByTag("nonexistent");
+
+            // Assert
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
         }
 
         @Test
@@ -199,15 +203,17 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("getUserPosts - should throw PostNotFoundException when user has no posts")
+        @DisplayName("getUserPosts - should return empty list when user has no posts")
         void getUserPosts_noPosts() {
             // Arrange
             ObjectId userIdWithNoPosts = new ObjectId();
 
-            // Act & Assert
-            assertThrows(PostNotFoundException.class, () ->
-                postService.getUserPosts(userIdWithNoPosts)
-            );
+            // Act
+            List<Post> result = postService.getUserPosts(userIdWithNoPosts);
+
+            // Assert
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
         }
     }
 

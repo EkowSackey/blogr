@@ -37,9 +37,9 @@ public class PostDetailController {
     public Button sendReview;
 
     ContextUtil context = ContextUtil.getInstance();
-    private final Post post = context.getCurrentPost();
-    private final UserService userService = ServiceLocator.getUserService();
-    private final PostService postService = ServiceLocator.getPostService();
+    private Post post;
+    private final UserService userService = new UserService();
+    private final PostService postService = new PostService();
 
     private ErrorDisplay strategy;
     private final ValidationSupport vs = new ValidationSupport();
@@ -47,6 +47,7 @@ public class PostDetailController {
     private final BooleanProperty isOwner = new SimpleBooleanProperty(false);
 
     public void initialize(){
+        post = context.getCurrentPost();
         if (post == null) return;
         
         updateOwnership();
@@ -60,6 +61,17 @@ public class PostDetailController {
         // Bind slider value to label
         ratingValue.textProperty().bind(ratingSlider.valueProperty().asString("%.1f"));
 
+        loadPostData();
+
+        ValidationUtils.init(vs);
+        ValidationUtils.registerRequired(vs, commentArea, "You can't send an empty review.");
+        ValidationUtils.bindDisableOnInvalid(sendReview, vs);
+
+        strategy = new AlertErrorDisplay();
+
+    }
+
+    private void loadPostData() {
         postTitle.setText(post.title());
         try {
              var author = userService.getMyProfile(post.authorId());
@@ -75,13 +87,6 @@ public class PostDetailController {
         avgRating.setText(String.format("%.1f", post.avgRating()));
 
         displayComments();
-
-        ValidationUtils.init(vs);
-        ValidationUtils.registerRequired(vs, commentArea, "You can't send an empty review.");
-        ValidationUtils.bindDisableOnInvalid(sendReview, vs);
-
-        strategy = new AlertErrorDisplay();
-
     }
 
     public void updateOwnership(){
@@ -131,8 +136,6 @@ public class PostDetailController {
         ObjectId postId = context.getCurrentPost().postId();
 
         postService.addReview(stars, comment, userId, postId);
-        // Refresh by switching back and forth or just re-initializing if possible
-        // Ideally should just reload data, but for now switch is safe
         refresh(actionEvent);
     }
 
@@ -176,15 +179,15 @@ public class PostDetailController {
     }
 
     private void refresh(Event event){
-        Switcher.switchScreen(event, Screen.HOME);
-        // Note: This double switch might be jarring but it's how the original code worked to refresh.
-        // Better: reload data in place. But I'll stick to legacy behavior for now to minimize logic bugs.
-        // Actually, let's just go home for simpler UX or try to reload.
-        // context.setCurrentPost(postService.getPost(post.postId())); 
-        // initialize();
-        // Since I don't want to change too much logic, I'll keep the switch to Detail.
-        // But Screen.DETAIL logic in Switcher might need context set.
-        Switcher.switchScreen(event, Screen.DETAIL);
+        // Reload post from DB
+        post = postService.getPostById(post.postId());
+        context.setCurrentPost(post); // Update context
+        
+        loadPostData();
+        
+        // Clear input fields
+        commentArea.clear();
+        ratingSlider.setValue(5.0);
     }
 
     public void deleteComment(Event event, ObjectId postId, ObjectId commentId){

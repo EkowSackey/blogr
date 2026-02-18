@@ -35,8 +35,8 @@ public class UserService {
             throw new DuplicateEmailException("User with this email already exists");
         }
 
-        User user = new User(username, email, PasswordUtil.hash(password), String.valueOf(Role.REGULAR));
-        userRepository.createUser(user);
+        User user = new User(username, email, PasswordUtil.hash(password), Role.REGULAR);
+        urepo.createUser(user);
     }
 
     public ObjectId login(String usernameOrEmail, String password){
@@ -68,13 +68,8 @@ public class UserService {
     }
 
     public List<User> findUsersByUsername(String searchTerm){
-        List<User> users = userRepository.searchByUsername(searchTerm);
-
-        if (users != null && !users.isEmpty()){
-            return users;
-        }
-
-        throw new UserNotFoundException("No users with this username");
+        List<User> users = urepo.searchByUsername(searchTerm);
+        return users != null ? users : List.of();
     }
 
     public ObjectId findUserByUsername(String searchTerm){

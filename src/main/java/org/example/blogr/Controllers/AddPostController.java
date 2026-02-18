@@ -89,7 +89,7 @@ public class AddPostController {
         List<Review> reviews = new ArrayList<>();
 
         if (context.isEditMode()){
-            Post newPost = Post.createWithCalculatedFields(null, title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
+            Post newPost = new Post(null, title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
             postService.updatePost(context.getCurrentPost().postId(), newPost);
             context.setEditMode(false);
         }
