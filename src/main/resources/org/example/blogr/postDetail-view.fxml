@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -12,9 +9,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -33,86 +29,59 @@
 
     <AnchorPane id="background" stylesheets="@application.css">
 
-            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" spacing="20">
                 <padding>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </padding>
-                <AnchorPane prefHeight="72.0" prefWidth="632.0">
-                    <Button fx:id="backButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToHome" text="Back" AnchorPane.leftAnchor="10.0" />
-                    <Button fx:id="editButton" layoutX="102.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToEdit" text="Edit" AnchorPane.leftAnchor="80.0" />
-                    <Button id="deleteButton" fx:id="deleteButton" layoutX="146.0" layoutY="10.0" mnemonicParsing="false" onAction="#deletePost" stylesheets="@application.css" text="Delete" textFill="WHITE" />
-                </AnchorPane>
-                <AnchorPane prefHeight="82.0" prefWidth="642.0">
-                    <Label fx:id="postTitle" layoutX="20.0" text="Post Title" textFill="WHITE" />
-                    <Text fill="WHITE" layoutX="20.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Author: ">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </Text>
-                    <Text fx:id="authorName" fill="WHITE" layoutX="84.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Author name">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </Text>
-                    <Text fill="WHITE" layoutX="195.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Created: ">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </Text>
-                    <Text fx:id="dateCreated" fill="WHITE" layoutX="296.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Created">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </Text>
-                    <Text fill="WHITE" layoutX="447.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Update: ">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </Text>
-                    <Text fx:id="lastUpdate" fill="WHITE" layoutX="541.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Update:">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </Text>
-                </AnchorPane>
-                <WebView fx:id="webView" focusTraversable="false" prefHeight="516.0" prefWidth="642.0" VBox.vgrow="ALWAYS">
-               <cursor>
-                  <Cursor fx:constant="DISAPPEAR" />
-               </cursor></WebView>
-                <AnchorPane fx:id="reviewPane" prefHeight="178.0" prefWidth="642.0">
-                    <Slider fx:id="ratingSlider" blockIncrement="0.5" layoutX="155.0" layoutY="27.0" majorTickUnit="0.5" max="6.0" minorTickCount="0" prefHeight="38.0" prefWidth="272.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-                    <Label layoutX="9.0" layoutY="6.0" text="Rate this post: " textFill="WHITE" />
-                    <Label layoutX="14.0" layoutY="56.0" text="Add a comment" textFill="WHITE" />
-                    <TextArea fx:id="commentArea" layoutX="14.0" layoutY="102.0" prefHeight="72.0" prefWidth="606.0" promptText="add a comment">
-                        <font>
-                            <Font name="Monospaced Regular" size="12.0" />
-                        </font>
-                    </TextArea>
-                    <Button fx:id="sendReview" layoutX="555.0" layoutY="26.0" mnemonicParsing="false" onAction="#addReview" text="Send" />
-                </AnchorPane>
-                <VBox prefHeight="200.0" prefWidth="100.0">
-                    <AnchorPane prefHeight="67.0" prefWidth="642.0">
-                        <VBox.margin>
-                            <Insets top="10.0" />
-                        </VBox.margin>
-                        <Label layoutX="5.0" layoutY="12.0" text="Comments: " textFill="WHITE" />
-                        <Label layoutX="428.0" layoutY="12.0" text="Avg Rating:" textFill="WHITE" />
-                        <Text fx:id="avgRating" fill="WHITE" layoutX="550.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
-                            <font>
-                                <Font name="Monospaced Regular" size="23.0" />
-                            </font>
-                        </Text>
-                        <Text fx:id="commentCount" fill="WHITE" layoutX="110.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
-                            <font>
-                                <Font name="Monospaced Regular" size="23.0" />
-                            </font>
-                        </Text>
-                    </AnchorPane>
-                    <ListView fx:id="commentList" VBox.vgrow="ALWAYS">
-                        <VBox.margin>
-                            <Insets top="10.0" />
-                        </VBox.margin>
-                    </ListView>
+                
+                <!-- Action Buttons -->
+                <HBox spacing="10">
+                    <Button fx:id="backButton" mnemonicParsing="false" onAction="#switchToHome" text="Back" />
+                    <Button fx:id="editButton" mnemonicParsing="false" onAction="#switchToEdit" text="Edit" />
+                    <Button id="deleteButton" fx:id="deleteButton" mnemonicParsing="false" onAction="#deletePost" stylesheets="@application.css" text="Delete" textFill="WHITE" />
+                </HBox>
+
+                <!-- Post Header -->
+                <VBox spacing="5">
+                    <Label fx:id="postTitle" text="Post Title" styleClass="h1" wrapText="true"/>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="By:" styleClass="text"/>
+                        <Label fx:id="authorName" text="Author name" styleClass="text" style="-fx-font-weight: bold;"/>
+                        <Label text="|" styleClass="text"/>
+                        <Label fx:id="dateCreated" text="Date Created" styleClass="text"/>
+                        <Label text="|" styleClass="text"/>
+                        <Label fx:id="lastUpdate" text="Last Update" styleClass="text"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Content -->
+                <WebView fx:id="webView" focusTraversable="false" minHeight="400.0" prefHeight="-1" prefWidth="-1" VBox.vgrow="ALWAYS"/>
+
+                <!-- Review Section -->
+                <VBox fx:id="reviewPane" spacing="10" style="-fx-background-color: #252526; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Rate this post:" styleClass="h2"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Slider fx:id="ratingSlider" blockIncrement="0.5" majorTickUnit="1" max="5.0" min="0" value="5" showTickLabels="true" showTickMarks="true" snapToTicks="true" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="ratingValue" text="5.0" styleClass="text"/>
+                    </HBox>
+                    
+                    <Label text="Add a comment:" styleClass="h2"/>
+                    <TextArea fx:id="commentArea" prefHeight="80.0" promptText="Write your thoughts..." wrapText="true"/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Button fx:id="sendReview" mnemonicParsing="false" onAction="#addReview" text="Post Comment" />
+                    </HBox>
+                </VBox>
+
+                <!-- Comments List -->
+                <VBox spacing="10" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label text="Comments" styleClass="h2"/>
+                        <Label fx:id="commentCount" text="(0)" styleClass="text"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Avg Rating:" styleClass="text"/>
+                        <Label fx:id="avgRating" text="0.0" styleClass="text" style="-fx-font-weight: bold; -fx-text-fill: #4A90E2;"/>
+                    </HBox>
+                    <ListView fx:id="commentList" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                 </VBox>
             </VBox>
 

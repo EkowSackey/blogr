@@ -25,14 +25,9 @@
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
               AnchorPane.topAnchor="0.0">
             <AnchorPane prefHeight="77.0" prefWidth="632.0">
-                <Text fill="WHITE" layoutX="14.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Home">
-                    <font>
-                        <Font name="Chiller" size="32.0"/>
-                    </font>
-                </Text>
+                <Label layoutX="14.0" layoutY="20.0" text="Home" styleClass="h1" textFill="WHITE" />
             </AnchorPane>
-            <ListView fx:id="postList" VBox.vgrow="ALWAYS"/>
+            <ListView fx:id="postList" VBox.vgrow="ALWAYS" styleClass="list-view"/>
         </VBox>
     </AnchorPane>
 </HBox>
