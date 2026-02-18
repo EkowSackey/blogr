@@ -13,6 +13,8 @@ import org.example.blogr.exceptions.PostNotFoundException;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +25,7 @@ import java.util.regex.Pattern;
 import static com.mongodb.client.model.Updates.push;
 
 public class PostRepository {
+    private static final Logger logger = LoggerFactory.getLogger(PostRepository.class);
     private final MongoCollection<Document> collection;
     private static final String DEFAULT_DATABASE = "lab4";
 
@@ -46,7 +49,7 @@ public class PostRepository {
 
     private Document toDoc(Post post) {
         Document d = new Document()
-                .append("postId", post.postId())
+                .append("_id", post.postId())
                 .append("title", post.title())
                 .append("content", post.content())
                 .append("dateCreated", post.dateCreated())
@@ -120,26 +123,24 @@ public class PostRepository {
                         )
                 ).toList();
         return new Post(
-                d.getObjectId("postId"),
+                d.getObjectId("_id"),
                 d.getString("title"),
                 d.getString("content"),
                 d.getDate("dateCreated"),
                 d.getDate("lastUpdate"),
                 d.getObjectId("authorId"),
                 comments,
-                comments.size(),
+                d.getInteger("commentCount", 0),
                 tags,
                 reviews,
-                0
+                d.getDouble("avgRating")
         );
     }
 
     public void createPost(Post post){
         var doc = toDoc(post);
         InsertOneResult result = collection.insertOne(doc);
-        System.out.println("Inserted a document with id: "
-                + Objects.requireNonNull(result.getInsertedId())
-                .asObjectId().getValue());
+        logger.info("Inserted a document with id: {}", Objects.requireNonNull(result.getInsertedId()).asObjectId().getValue());
     }
 
     public List<Post> getAllPosts(){
@@ -152,7 +153,7 @@ public class PostRepository {
     public Post getPostById(String id){
         if (!ObjectId.isValid(id)) throw new IllegalArgumentException("Invalid ObjectId format");
 
-        Bson filter = Filters.eq("postId", new ObjectId(id));
+        Bson filter = Filters.eq("_id", new ObjectId(id));
         Document doc = collection.find(filter).first();
         if (doc != null)
             return toDomain(doc);
@@ -185,11 +186,11 @@ public class PostRepository {
     }
 
     public void updatePost(ObjectId id, String field, Object value){
-        Bson filter = Filters.eq("postId", id);
+        Bson filter = Filters.eq("_id", id);
         Bson updates  = Updates.set(field, value);
 
         UpdateResult result = collection.updateOne(filter, updates);
-        System.out.println("Modified fields:" + result.getModifiedCount());
+        logger.info("Modified fields: {}", result.getModifiedCount());
     }
 
 
@@ -199,7 +200,7 @@ public class PostRepository {
                 .append("postId", postId)
                 .append("userId", review.userId());
 
-        Bson filter = Filters.eq("postId", postId);
+        Bson filter = Filters.eq("_id", postId);
 
 
         List<Bson> pipeline = Arrays.asList(
@@ -220,7 +221,7 @@ public class PostRepository {
         );
 
         UpdateResult result = collection.updateOne(filter, pipeline);
-        System.out.println("modified docs: " + result.getModifiedCount());
+        logger.info("modified docs: {}", result.getModifiedCount());
     }
 
 
@@ -235,7 +236,7 @@ public class PostRepository {
                 .append("parentId", postId)
                 .append("createdAt", comment.createdAt());
 
-        Bson filter = Filters.eq("postId", postId);
+        Bson filter = Filters.eq("_id", postId);
 
         List<Bson> pipeline = Arrays.asList(
                 new Document("$set", new Document("commentsNew",
@@ -252,23 +253,23 @@ public class PostRepository {
         if (result.getModifiedCount() == 0) {
             throw new IllegalStateException("Post not found or comment not added");
         }
-        System.out.println("added comment with id: " + commentId + " to post with id: " + postId);
+        logger.info("added comment with id: {} to post with id: {}", commentId, postId);
     }
 
 
 
 
     public void deletePost(ObjectId id){
-        Bson filter = Filters.eq("postId", id);
+        Bson filter = Filters.eq("_id", id);
         collection.findOneAndDelete(filter);
-        System.out.println("Post deleted with id: " + id);
+        logger.info("Post deleted with id: {}", id);
     }
 
     public void deleteCommentById(ObjectId postId, ObjectId commentId){
-        Bson filter = Filters.eq("postId", postId);
+        Bson filter = Filters.eq("_id", postId);
         Bson update = Updates.pull("comments", new Document("commentId", commentId));
 
         UpdateResult result = collection.updateOne(filter, update);
-        System.out.println("deleted: " + result.getModifiedCount());
+        logger.info("deleted: {}", result.getModifiedCount());
     }
 }

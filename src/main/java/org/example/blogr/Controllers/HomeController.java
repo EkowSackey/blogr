@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import org.example.blogr.Utils.ContextUtil;
+import org.example.blogr.Utils.ServiceLocator;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.components.PostListCell;
 import org.example.blogr.domain.Post;
@@ -17,9 +18,16 @@ public class HomeController {
     @FXML
     public ListView<Post> postList;
 
+<<<<<<< redo_branch
+    List<Post> allPosts;
+    private final PostService postService = ServiceLocator.getPostService();
+    private final UserService userService = ServiceLocator.getUserService();
+
+=======
     private List<Post> allPosts;
     private final PostService postService = new PostService();
     
+>>>>>>> main
     ContextUtil context = ContextUtil.getInstance();
 
     public void initialize(){

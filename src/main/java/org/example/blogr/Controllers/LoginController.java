@@ -1,16 +1,15 @@
 package org.example.blogr.Controllers;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import org.bson.types.ObjectId;
 import org.controlsfx.validation.ValidationSupport;
-import org.example.blogr.Utils.AlertErrorDisplay;
-import org.example.blogr.Utils.ContextUtil;
-import org.example.blogr.Utils.ErrorDisplay;
-import org.example.blogr.Utils.ValidationUtils;
+import org.example.blogr.Utils.*;
 import org.example.blogr.domain.Post;
 import org.example.blogr.domain.User;
 import org.example.blogr.exceptions.InvalidCredentialsException;
@@ -22,7 +21,6 @@ import java.util.List;
 
 
 public class LoginController {
-    @FXML private Hyperlink registerLink;
     @FXML private TextField usernameOrEmailField;
     @FXML private TextField passwordField;
     @FXML private Button loginButton;
@@ -31,6 +29,7 @@ public class LoginController {
     private final ValidationSupport vs = new ValidationSupport();
     private ErrorDisplay strategy;
 
+    private final BooleanProperty isSubmitting = new SimpleBooleanProperty(false);
     ContextUtil context = ContextUtil.getInstance();
 
     public void switchToRegister(ActionEvent actionEvent) throws IOException {
@@ -42,7 +41,7 @@ public class LoginController {
 
         ValidationUtils.registerRequired(vs, usernameOrEmailField, "Username is required");
         ValidationUtils.registerMinLength(vs, passwordField, 8, "Password must be at least 8 characters");
-        ValidationUtils.bindDisableOnInvalid(loginButton, vs);
+        loginButton.disableProperty().bind(vs.invalidProperty().or(isSubmitting));
 
         strategy = new AlertErrorDisplay();
     }
@@ -55,22 +54,45 @@ public class LoginController {
             return;
         }
 
-        UserService userService = new UserService();
-        PostService postService = new PostService();
-        try {
-            ObjectId userId = userService.login(usernameOrEmailField.getText(), passwordField.getText());
-            User currentUser = userService.getMyProfile(userId);
-            List<Post> userPosts = postService.getUserPosts(userId);
+        isSubmitting.set(true);
 
-            context.setCurrentUserId(userId);
-            context.setCurrentUser(currentUser);
-            context.setUserPosts(userPosts);
-            sc.switchToHome(actionEvent);
-        } catch ( InvalidCredentialsException e) {
-            ValidationUtils.showServerError(strategy, e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Task<Void> loginTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                UserService userService = ServiceLocator.getUserService();
+                PostService postService = ServiceLocator.getPostService();
 
+                ObjectId userId = userService.login(usernameOrEmailField.getText(), passwordField.getText());
+                User currentUser = userService.getMyProfile(userId);
+                List<Post> userPosts = postService.getUserPosts(userId);
+
+                context.setCurrentUserId(userId);
+                context.setCurrentUser(currentUser);
+                context.setUserPosts(userPosts);
+                return null;
+            }
+        };
+
+        loginTask.setOnSucceeded(e -> {
+            isSubmitting.set(false);
+            try {
+                sc.switchToHome(actionEvent);
+            } catch (IOException ex) {
+                ValidationUtils.showServerError(strategy, "Error loading home screen: " + ex.getMessage());
+            }
+        });
+
+        loginTask.setOnFailed(e -> {
+            isSubmitting.set(false);
+            Throwable exception = loginTask.getException();
+            if (exception instanceof InvalidCredentialsException) {
+                ValidationUtils.showServerError(strategy, exception.getMessage());
+            } else {
+                ValidationUtils.showServerError(strategy, "Login failed: " + exception.getMessage());
+                exception.printStackTrace();
+            }
+        });
+
+        TaskRunner.run(loginTask);
     }
 }

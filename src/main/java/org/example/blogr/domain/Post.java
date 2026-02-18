@@ -18,7 +18,7 @@ public record Post(
                    List<Review> reviews,
                    double avgRating)
 {
-    public Post{
+    public Post {
         if (postId == null){
             postId = new ObjectId();
         }
@@ -27,24 +27,31 @@ public record Post(
         if (comments == null){
             comments = List.of();
         }
-        commentCount = comments.size();
 
         // Handle null reviews list
         if (reviews == null){
             reviews = List.of();
         }
+    }
 
-        if (!reviews.isEmpty()){
-            int count = 0;
+    public static Post createWithCalculatedFields(ObjectId postId, String title, String content, Date dateCreated,
+                                                  Date lastUpdate, ObjectId authorId, List<Comment> comments,
+                                                  List<Tag> tags, List<Review> reviews) {
+        
+        List<Comment> safeComments = comments == null ? List.of() : comments;
+        List<Review> safeReviews = reviews == null ? List.of() : reviews;
+        
+        int commentCount = safeComments.size();
+        
+        double avgRating = 0.0;
+        if (!safeReviews.isEmpty()){
             double total = 0.0;
-
-            for (Review r: reviews){
-                count += 1;
+            for (Review r: safeReviews){
                 total += r.stars();
             }
-
-            avgRating = total/count;
-
+            avgRating = total / safeReviews.size();
         }
+
+        return new Post(postId, title, content, dateCreated, lastUpdate, authorId, safeComments, commentCount, tags, safeReviews, avgRating);
     }
 }
