@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import org.controlsfx.validation.ValidationSupport;
 import org.example.blogr.Utils.AlertErrorDisplay;
 import org.example.blogr.Utils.ErrorDisplay;
+import org.example.blogr.Utils.ServiceLocator;
 import org.example.blogr.Utils.ValidationUtils;
 import org.example.blogr.exceptions.DuplicateEmailException;
 import org.example.blogr.exceptions.DuplicateUsernameException;
@@ -55,7 +56,7 @@ public class RegisterController {
             return;
         }
 
-        UserService userService = new UserService();
+        UserService userService = ServiceLocator.getUserService();
         try{
             userService.register(usernameField.getText(), emailField.getText(), passwordField.getText());
             switchToLogin(actionEvent);

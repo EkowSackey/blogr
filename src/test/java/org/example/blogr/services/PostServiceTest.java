@@ -258,7 +258,7 @@ class PostServiceTest {
             List<Post> posts = postService.getPosts();
             ObjectId postId = posts.get(0).postId();
 
-            Post updatedPost = new Post(
+            Post updatedPost = Post.createWithCalculatedFields(
                 null,
                 "Updated Title",
                 "<p>Updated content</p>",
@@ -266,10 +266,8 @@ class PostServiceTest {
                 new Date(),
                 testAuthorId,
                 new ArrayList<>(),
-                0,
                 new ArrayList<>(),
-                new ArrayList<>(),
-                0.0
+                new ArrayList<>()
             );
 
             // Act

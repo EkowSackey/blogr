@@ -36,7 +36,7 @@ public class AddPostController {
 
     private ErrorDisplay strategy;
     private final ValidationSupport vs = new ValidationSupport();
-    private final PostService postService = new PostService();
+    private final PostService postService = ServiceLocator.getPostService();
 
     ContextUtil context = ContextUtil.getInstance();
 
@@ -89,7 +89,7 @@ public class AddPostController {
         List<Review> reviews = new ArrayList<>();
 
         if (context.isEditMode()){
-            Post newPost = new Post(null, title, content, dateCreated, lastUpdate, authorId, comments,0, tags, reviews, 0 );
+            Post newPost = Post.createWithCalculatedFields(null, title, content, dateCreated, lastUpdate, authorId, comments, tags, reviews);
             postService.updatePost(context.getCurrentPost().postId(), newPost);
             context.setEditMode(false);
         }

@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.example.blogr.Config.MongoConfig;
 import org.example.blogr.Utils.CacheUtil;
 
 import java.io.IOException;
@@ -27,5 +28,11 @@ public class BlogrApplication extends Application {
         stage.setResizable(true);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        MongoConfig.close();
+        super.stop();
     }
 }

@@ -40,8 +40,8 @@ public class PostDetailController {
 
     ContextUtil context = ContextUtil.getInstance();
     private final Post post = context.getCurrentPost();
-    private final UserService userService = new UserService();
-    private final PostService postService = new PostService();
+    private final UserService userService = ServiceLocator.getUserService();
+    private final PostService postService = ServiceLocator.getPostService();
 
     private ErrorDisplay strategy;
     private final ValidationSupport vs = new ValidationSupport();

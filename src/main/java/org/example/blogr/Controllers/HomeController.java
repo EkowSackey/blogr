@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.example.blogr.Utils.ContextUtil;
+import org.example.blogr.Utils.ServiceLocator;
 import org.example.blogr.Utils.Switcher;
 import org.example.blogr.domain.Post;
 import org.example.blogr.services.PostService;
@@ -19,8 +20,8 @@ public class HomeController {
     public ListView<VBox> postList;
 
     List<Post> allPosts;
-    private final PostService postService = new PostService();
-    private final UserService userService = new UserService();
+    private final PostService postService = ServiceLocator.getPostService();
+    private final UserService userService = ServiceLocator.getUserService();
 
     ContextUtil context = ContextUtil.getInstance();
 
