@@ -7,6 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
+import org.example.blogr.domain.Role;
 import org.example.blogr.domain.User;
 import org.example.blogr.exceptions.UserNotFoundException;
 import org.bson.Document;
@@ -43,7 +44,7 @@ public class UserRepository {
         var d = new Document();
         d.put("username", user.username());
         d.put("email", user.email());
-        d.put("role", user.role());
+        d.put("role", user.role().toString());
         d.put("password", user.password());
 
         return d;
@@ -53,7 +54,7 @@ public class UserRepository {
         return new User(d.getString("username"),
                 d.getString("email"),
                 d.getString("password"),
-                d.getString("role"));
+                Role.valueOf(d.getString("role")));
     }
 
     public void createUser(User user){
