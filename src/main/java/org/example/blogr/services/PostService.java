@@ -48,29 +48,20 @@ public class PostService {
 
     public List<Post> getPostsByTitle(String title){
         List<Post> posts = prepo.getPostsByTitle(title);
-
-        if (posts.isEmpty()){
-            throw new PostNotFoundException("Your search term didn't match any posts");
-        }
-
-        return posts;
+        return posts != null ? posts : List.of();
     }
 
     public  List<Post> getPostsByTag(String tag){
         Tag searchTag = new Tag(tag);
         List<Post> posts = prepo.getPostsByTag(searchTag);
-
-        if (posts.isEmpty()){
-            throw new PostNotFoundException("No post with this tag.");
-        }
-        return posts;
+        return posts != null ? posts : List.of();
     }
 
     public Post createPost(String title, String content, Date created,
                            Date updated, ObjectId author, List<Comment> comments,
                            List<Tag> tags, List<Review> reviews){
-        int commentCount = comments == null ? 0 : comments.size();
-        Post post = new Post(null, title, content, created, updated, author, comments, commentCount, tags, reviews, 0);
+        ObjectId postId = new ObjectId();
+        Post post = new Post(postId, title, content, created, updated, author, comments, tags, reviews);
         prepo.createPost(post);
         return post;
     }
@@ -87,16 +78,12 @@ public class PostService {
 
     public List<Post> getUserPosts(ObjectId userId){
         List<Post> userPosts = prepo.getPostsByAuthor(userId);
-
-        if (userPosts != null && !userPosts.isEmpty()){
-            return userPosts;
-        }
-
-        throw new PostNotFoundException("User has no Posts");
+        return userPosts != null ? userPosts : List.of();
     }
 
     public void addReview(double stars, String comment, ObjectId userId, ObjectId postId){
-        Comment c = new Comment(null, comment, userId, postId, new Date() );
+        ObjectId commentId = new ObjectId();
+        Comment c = new Comment(commentId, comment, userId, postId, new Date() );
         Review r = new Review(stars, userId, postId);
 
         prepo.addPostReview(postId, r);
@@ -105,5 +92,9 @@ public class PostService {
 
     public void deleteComment(ObjectId postId, ObjectId commentId){
         prepo.deleteCommentById(postId, commentId);
+    }
+
+    public Post getPostById(ObjectId id){
+        return prepo.getPostById(id.toHexString());
     }
 }
