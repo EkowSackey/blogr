@@ -203,14 +203,12 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("findUsersByUsername - should return empty list when no matches")
+        @DisplayName("findUsersByUsername - should throw UserNotFoundException when no matches")
         void findUsersByUsername_notFound() {
-            // Act
-            List<User> result = userService.findUsersByUsername("nonexistent");
-
-            // Assert
-            assertNotNull(result);
-            assertTrue(result.isEmpty());
+            // Act & Assert
+            assertThrows(UserNotFoundException.class, () ->
+                userService.findUsersByUsername("nonexistent")
+            );
         }
 
         @Test

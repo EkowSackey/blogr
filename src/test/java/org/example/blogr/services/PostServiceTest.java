@@ -134,14 +134,12 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("getPostsByTitle - should return empty list when no matches")
+        @DisplayName("getPostsByTitle - should throw PostNotFoundException when no matches")
         void getPostsByTitle_notFound() {
-            // Act
-            List<Post> result = postService.getPostsByTitle("NonExistent");
-
-            // Assert
-            assertNotNull(result);
-            assertTrue(result.isEmpty());
+            // Act & Assert
+            assertThrows(PostNotFoundException.class, () ->
+                postService.getPostsByTitle("NonExistent")
+            );
         }
 
         @Test
@@ -169,14 +167,12 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("getPostsByTag - should return empty list when no matches")
+        @DisplayName("getPostsByTag - should throw PostNotFoundException when no matches")
         void getPostsByTag_notFound() {
-            // Act
-            List<Post> result = postService.getPostsByTag("nonexistent");
-
-            // Assert
-            assertNotNull(result);
-            assertTrue(result.isEmpty());
+            // Act & Assert
+            assertThrows(PostNotFoundException.class, () ->
+                postService.getPostsByTag("nonexistent")
+            );
         }
 
         @Test
@@ -203,17 +199,15 @@ class PostServiceTest {
         }
 
         @Test
-        @DisplayName("getUserPosts - should return empty list when user has no posts")
+        @DisplayName("getUserPosts - should throw PostNotFoundException when user has no posts")
         void getUserPosts_noPosts() {
             // Arrange
             ObjectId userIdWithNoPosts = new ObjectId();
 
-            // Act
-            List<Post> result = postService.getUserPosts(userIdWithNoPosts);
-
-            // Assert
-            assertNotNull(result);
-            assertTrue(result.isEmpty());
+            // Act & Assert
+            assertThrows(PostNotFoundException.class, () ->
+                postService.getUserPosts(userIdWithNoPosts)
+            );
         }
     }
 
@@ -272,8 +266,10 @@ class PostServiceTest {
                 new Date(),
                 testAuthorId,
                 new ArrayList<>(),
+                0,
                 new ArrayList<>(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                0.0
             );
 
             // Act

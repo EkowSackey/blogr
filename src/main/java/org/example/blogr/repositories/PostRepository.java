@@ -127,8 +127,10 @@ public class PostRepository {
                 d.getDate("lastUpdate"),
                 d.getObjectId("authorId"),
                 comments,
+                comments.size(),
                 tags,
-                reviews
+                reviews,
+                0
         );
     }
 
@@ -225,7 +227,7 @@ public class PostRepository {
 
     public void addComment(Comment comment) {
         ObjectId postId = comment.parentId();
-        ObjectId commentId = comment.commentId();
+        ObjectId commentId = new ObjectId();
 
         Document newComment = new Document("commentId", commentId)
                 .append("content", comment.content())

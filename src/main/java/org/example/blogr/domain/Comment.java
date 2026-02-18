@@ -15,5 +15,10 @@ public record Comment(
         if(createdAt == null){
             createdAt = new Date();
         }
+
+        if (commentId == null){
+            commentId = new ObjectId();
+        }
+
     }
 }

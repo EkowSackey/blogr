@@ -13,33 +13,38 @@ public record Post(
                    Date lastUpdate,
                    ObjectId authorId,
                    List<Comment> comments,
+                   int commentCount,
                    List<Tag> tags,
-                   List<Review> reviews)
+                   List<Review> reviews,
+                   double avgRating)
 {
     public Post{
+        if (postId == null){
+            postId = new ObjectId();
+        }
+
         // Handle null comments list
         if (comments == null){
             comments = List.of();
         }
+        commentCount = comments.size();
 
         // Handle null reviews list
         if (reviews == null){
             reviews = List.of();
         }
-    }
 
-    public int commentCount() {
-        return comments.size();
-    }
+        if (!reviews.isEmpty()){
+            int count = 0;
+            double total = 0.0;
 
-    public double avgRating() {
-        if (reviews.isEmpty()){
-            return 0.0;
+            for (Review r: reviews){
+                count += 1;
+                total += r.stars();
+            }
+
+            avgRating = total/count;
+
         }
-        double total = 0.0;
-        for (Review r: reviews){
-            total += r.stars();
-        }
-        return total/reviews.size();
     }
 }
